@@ -523,20 +523,24 @@ mod tests {
     #[test]
     fn invalid_auth_mode_and_url_are_rejected() {
         let missing = Path::new("/definitely/missing/config.toml");
-        assert!(Config::load_from_sources(
-            missing,
-            [],
-            [("APPRISE_MCP_AUTH_MODE".into(), "typo".into())],
-            []
-        )
-        .is_err());
-        assert!(Config::load_from_sources(
-            missing,
-            [],
-            [("APPRISE_URL".into(), "file:///tmp/apprise".into())],
-            []
-        )
-        .is_err());
+        assert!(
+            Config::load_from_sources(
+                missing,
+                [],
+                [("APPRISE_MCP_AUTH_MODE".into(), "typo".into())],
+                []
+            )
+            .is_err()
+        );
+        assert!(
+            Config::load_from_sources(
+                missing,
+                [],
+                [("APPRISE_URL".into(), "file:///tmp/apprise".into())],
+                []
+            )
+            .is_err()
+        );
     }
 
     #[test]

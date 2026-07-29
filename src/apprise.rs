@@ -2,9 +2,9 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use futures_util::StreamExt;
-use reqwest::{header, Client, Response, StatusCode};
+use reqwest::{Client, Response, StatusCode, header};
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use thiserror::Error;
 use tokio::sync::Semaphore;
 use url::Url;

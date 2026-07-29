@@ -54,7 +54,7 @@ jobs:
       - run: cargo nextest run --workspace --all-features --profile ci
 
   msrv:
-    name: MSRV 1.90
+    name: MSRV
     runs-on: [self-hosted, unraid]
     timeout-minutes: 25
     steps:
@@ -62,8 +62,8 @@ jobs:
       - name: Install Rust + soldr
         uses: ./.github/actions/setup-rust-soldr
         with:
-          toolchain: "1.90.0"
-      - run: cargo +1.90.0 check --workspace --all-targets --locked
+          toolchain: "1.97.1"
+      - run: cargo +1.97.1 check --workspace --all-targets --locked
 
   toml:
     name: TOML format

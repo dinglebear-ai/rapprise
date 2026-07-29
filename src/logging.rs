@@ -4,10 +4,10 @@ pub mod file;
 
 use std::io::IsTerminal;
 use std::path::Path;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
 use self::console::AuroraFormatter;
-use self::file::{RollingFileWriter, MAX_LOG_BYTES};
+use self::file::{MAX_LOG_BYTES, RollingFileWriter};
 
 const LOG_BUFFERED_LINES: usize = 8_192;
 

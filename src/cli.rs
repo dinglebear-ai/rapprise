@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -637,10 +637,12 @@ mod parse_tests {
     fn rejects_unknown_duplicate_and_dangling_flags() {
         assert!(CliCommand::parse(&strings(&["notify", "hello", "--bogus", "x"])).is_err());
         assert!(CliCommand::parse(&strings(&["notify", "hello", "--tag"])).is_err());
-        assert!(CliCommand::parse(&strings(&[
-            "notify", "hello", "--tag", "one", "--tag", "two",
-        ]))
-        .is_err());
+        assert!(
+            CliCommand::parse(&strings(&[
+                "notify", "hello", "--tag", "one", "--tag", "two",
+            ]))
+            .is_err()
+        );
         assert!(CliCommand::parse(&strings(&["setup", "plugin-hook", "--surprise",])).is_err());
     }
 }

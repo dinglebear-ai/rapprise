@@ -499,8 +499,9 @@ bash scripts/validate-plugin-layout.sh   # or: just validate-plugin
 `just test`, `just release`, `just build-plugin`, `just docker-up`,
 `just health`. The plugin recipe is `build-plugin` — there is no `plugin-build`.
 
-`Cargo.toml` declares `rmcp = "1.6.0"`, but the caret range resolves forward and
-`Cargo.lock` pins **rmcp 1.7.0**. Trust the lock.
+`Cargo.toml` pins **`rmcp = "=3.0.0-beta.2"`** exactly and `Cargo.lock` agrees.
+The `=` is deliberate: this repo previously declared `1.6.0` while the lock had
+drifted to 1.7.0.
 
 ## Verification
 
