@@ -1,16 +1,36 @@
 # apprise-rmcp agent guide
 
-`CLAUDE.md` is canonical. `AGENTS.md` and `GEMINI.md` must symlink to it.
+`CLAUDE.md` is canonical. `AGENTS.md` and `GEMINI.md` must symlink to it
+(`ln -sf CLAUDE.md AGENTS.md`). `tests/docs-contract.sh` enforces this.
 
 ## Product contract
 
 - Repository/npm package: `apprise-rmcp`
+- Git remote: `git@github.com:dinglebear-ai/rapprise.git`, default branch `main`
 - Rust crate/service: `apprise-mcp`
 - Executable: `rapprise`
 - MCP HTTP port: `40050`
-- Upstream default: `http://localhost:8000`
+- Upstream default: `http://localhost:8000` (Apprise API server, 80+ backends)
 - One `apprise` tool: `notify`, `notify_url`, `health`, `status`, `help`
+- Prompt: `send_alert`
 - Data: `${APPRISE_HOME:-~/.apprise}` on hosts, `/data` in containers
+- Registry identity: `ai.dinglebear/apprise-rmcp`
+
+This server is a thin projection over the Apprise API. It does not store
+destinations, schedule sends, or retry beyond upstream behavior.
+
+## Workspace layout
+
+Two-member Cargo workspace (`resolver = "2"`): the root `apprise-mcp` package
+and `xtask`. Edition 2021, MSRV 1.90 (`rust-version`). There is no
+`[workspace.package]`, `[workspace.dependencies]`, or `[workspace.lints]` table
+here — dependency versions live in the root `Cargo.toml` only.
+
+`Cargo.toml` declares `rmcp = "1.6.0"`, but that caret range already resolved
+forward: `Cargo.lock` pins **rmcp 1.7.0**. Trust the lock, not the manifest.
+Do not "fix" the declaration by bumping it without checking what the lock does.
+
+`lab-auth` comes from `github.com/dinglebear-ai/labby.git` at a pinned rev.
 
 ## Architecture
 
@@ -22,40 +42,91 @@ in `src/main.rs` and `src/mcp/routes.rs`.
 
 Use sibling `foo.rs` plus `foo/`, never `foo/mod.rs`.
 
+## Surfaces
+
+| Entry point | Transport |
+|---|---|
+| `rapprise mcp` | stdio MCP |
+| `rapprise serve`, `rapprise serve mcp` | Streamable HTTP MCP on `:40050` |
+| `rapprise <command>` | CLI |
+
+CLI commands: `notify`, `notify-url`, `health`, `doctor`, `help`,
+`setup check`, `setup repair`, `setup install`, `setup plugin-hook [--no-repair]`,
+plus `--json`, `--help`/`-h`, `--version`/`-V`.
+
+HTTP routes: `POST /mcp`, `GET /health` (always unauthenticated),
+`GET /ready` and `GET /status` (behind the auth layer), plus the `lab-auth`
+OAuth routes and `/mcp/.well-known/*` discovery when `auth_mode = oauth`.
+Unmatched paths return a JSON `404`. Request bodies are size-limited.
+
 ## Build and checks
 
 ```bash
+cargo fmt -- --check
+cargo clippy --all-targets -- -D warnings
 cargo check
 cargo test
 cargo build --release
 npm --prefix packages/apprise-rmcp test
-tests/docs-contract.sh
+npm --prefix packages/apprise-rmcp run check
+bash tests/docs-contract.sh
+bash scripts/validate-plugin-layout.sh   # or: just validate-plugin
 ```
+
+`just` recipes wrap most of these: `just check`, `just lint`, `just test`,
+`just release`, `just build-plugin`, `just health`, `just docker-up`.
+Note the recipe is `build-plugin`, not `plugin-build`.
 
 ## Plugin contract
 
 `plugins/apprise` is the only plugin source and is a bundled stdio plugin.
-`.mcp.json` launches `${CLAUDE_PLUGIN_ROOT}/bin/rapprise mcp`; hooks launch
-the same bundled binary with `setup plugin-hook`. Build it with
-`just plugin-build` before installing from a checkout. `setup check` is
-read-only, `setup repair` is idempotent, and `--no-repair` audits.
+`.mcp.json` launches `${CLAUDE_PLUGIN_ROOT}/bin/rapprise mcp`. Build the bundled
+binary with `just build-plugin` before installing from a checkout.
 
-Manifests do not advertise deployment options. Configure env or the canonical
-data-directory `.env`. Do not add Docker/systemd/service bootstrap to hooks or
-track a second plugin under `.claude/plugins`.
+**The plugin ships no Claude Code hooks.** There is no `hooks/` directory and
+the manifest declares no `hooks` key, so nothing runs on `SessionStart` or
+`ConfigChange`. Setup is operator-invoked: `setup check` is read-only,
+`setup repair` is idempotent, and `setup plugin-hook --no-repair` audits without
+mutating appdata. `setup plugin-hook` remains a supported CLI entry point for
+external automation even though no bundled hook calls it.
+`tests/docs-contract.sh`, `scripts/validate-plugin-layout.sh`, and
+`tests/setup_contract.rs` all assert the hooks stay absent.
+
+Manifests do not advertise deployment options and must not declare `version` or
+`userConfig`. Configure env or the canonical data-directory `.env`. Do not add
+Docker/systemd/service bootstrap to the plugin or track a second plugin under
+`.claude/plugins`.
 
 ## Auth invariants
 
-Stdio trusts the local parent process. HTTP no-auth is loopback-only. Bearer mode
-uses `APPRISE_MCP_TOKEN`; OAuth requires issuer/client/admin state and must not
+Stdio trusts the local parent process. HTTP no-auth is loopback-only — a
+non-loopback bind with no-auth must be rejected at startup. Bearer mode uses
+`APPRISE_MCP_TOKEN`; OAuth requires issuer/client/admin state and must not
 accept the static token when `disable_static_token_with_oauth=true`.
-`APPRISE_TOKEN` is a distinct outbound upstream credential.
+MCP scopes are `apprise:notify` and `apprise:admin`.
+
+`APPRISE_TOKEN` is a distinct **outbound** credential for a protected upstream
+Apprise API — never confuse it with the inbound `APPRISE_MCP_TOKEN`.
+
+Secrets never travel as MCP tool arguments. Config precedence is
+`config.toml` → `${APPRISE_HOME:-~/.apprise}/.env` (`/data/.env` in containers)
+→ process env, last wins. `docs/INVENTORY.md` is the full env-var table.
 
 ## Release invariant
 
 Crate, npm launcher, registry package, `server.json`, release manifest, tag,
-and assets use one coupled version. Registry identity is
-`ai.dinglebear/apprise-rmcp`. Release Please owns version changes.
+and assets use one coupled version. Release Please owns version changes — do not
+hand-edit versions. `tests/docs-contract.sh` cross-checks all six.
+
+Releases publish SHA-256 sums and GitHub build-provenance bundles; installers
+verify both and require GitHub CLI 2.68+.
+
+## Known drift
+
+- `Cargo.toml` `repository`/`homepage`, `packages/apprise-rmcp/package.json`,
+  and both plugin manifests still point at `github.com/jmagar/rapprise`. That
+  resolves only through GitHub's transfer redirect to `dinglebear-ai/rapprise`.
+- The declared `rmcp = "1.6.0"` is fiction; see the workspace section.
 
 Use `bd` for all tracking: run `bd prime`, claim before editing, and close
 completed work.

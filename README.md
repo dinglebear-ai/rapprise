@@ -77,9 +77,9 @@ the short Rust CLI name `rapprise`.
 |---|---|---|---|
 | npm / npx | `npx -y apprise-rmcp --help` | Linux/Windows x86_64 clients. | Verifies the release archive SHA-256 before atomic install. |
 | Release installer | [Verified installer procedure](#verified-release-installer) | Linux x86_64 without Node. | Verifies checksum and offline provenance before executing installer code. |
-| Docker / Compose | `docker compose up -d` | Shared HTTP MCP deployments. | Reads `.env` and exposes container port `40050`. |
+| Docker / Compose | `docker compose up -d` | Shared HTTP MCP deployments. | Reads `.env` and exposes container port `40050`. Needs the external network first — see [Deployment](#docker--compose). |
 | Build from source | `cargo build --release` | Development and audits. | Produces `target/release/rapprise`. |
-| Plugin | `just build-plugin && claude plugin install ./plugins/apprise` | Claude Code from this checkout. | Bundled `rapprise` stdio plugin. |
+| Plugin | `just build-plugin && claude plugin install ./plugins/apprise` | Claude Code from this checkout. | Bundled `rapprise` stdio plugin. Ships no hooks. |
 
 Releases publish SHA-256 files and offline GitHub build-provenance bundles. The
 installers verify both the checksum and provenance identity with GitHub CLI 2.68+.
@@ -114,8 +114,10 @@ release installer.
 Download the installer and its verification material without executing it,
 then verify both integrity and provenance before running it:
 
+Replace `version` with the release tag you want; `v0.2.0` is current.
+
 ```bash
-version=v0.1.3
+version=v0.2.0
 base="https://github.com/jmagar/rapprise/releases/download/${version}/rapprise-installer.sh"
 curl -fsSLO "$base"
 curl -fsSLO "$base.sha256"
@@ -130,19 +132,25 @@ gh attestation verify rapprise-installer.sh \
 APPRISE_RMCP_VERSION="$version" bash rapprise-installer.sh
 ```
 
+The `--repo` and `--signer-workflow` values must match the identity recorded in
+the attestation at build time. Releases cut before the repository moved to the
+`dinglebear-ai` org are attested as `jmagar/rapprise`; use `dinglebear-ai/rapprise`
+for releases cut afterwards.
+
 The npm launcher supports Windows x86_64 only when GitHub CLI 2.68+ is installed
 and `gh.exe` is available on `PATH`; provenance verification is not skipped.
 
 ### Build From Source
 
 ```bash
-git clone https://github.com/jmagar/rapprise
-cd apprise-rmcp
+git clone https://github.com/dinglebear-ai/rapprise
+cd rapprise
 cargo build --release
 ./target/release/rapprise --help
 ```
 
-Minimum supported Rust version: 1.90.
+Minimum supported Rust version: 1.90. Rust edition 2021. The Cargo workspace has
+two members: the root `apprise-mcp` package and `xtask`.
 
 ## Quickstart
 
@@ -260,6 +268,9 @@ secret storage.
 |---|---:|---|---|
 | MCP stdio | Supported | `rapprise mcp`, `npx -y apprise-rmcp mcp` | Local child-process MCP clients. |
 | MCP HTTP | Supported | `rapprise serve`, `POST /mcp` | Streamable HTTP MCP for local or shared server deployments. |
+| Liveness | Supported | `GET /health` | Always unauthenticated. |
+| Readiness / status | Supported | `GET /ready`, `GET /status` | Behind the same auth layer as `/mcp`. |
+| OAuth discovery | Conditional | `/mcp/.well-known/*` and `lab-auth` routes | Mounted only when `auth_mode = oauth`. |
 | CLI | Supported | `rapprise <command>` | Scriptable parity and debugging. |
 | Prompt | Supported | `send_alert` | Reusable critical-alert workflow. |
 | REST API | Not shipped | N/A | Apprise API already owns the REST API. |
@@ -329,14 +340,21 @@ rapprise health [--json]
 rapprise notify <body> [--tag TAG] [--title T] [--type info|success|warning|failure] [--json]
 rapprise notify-url <urls> <body> [--title T] [--type info|success|warning|failure] [--json]
 
-rapprise serve
-rapprise serve mcp
-rapprise mcp
-rapprise doctor [--json]
-rapprise setup check
-rapprise setup repair
+rapprise serve                          # Streamable HTTP MCP on :40050
+rapprise serve mcp                      # same as `serve`
+rapprise mcp                            # stdio MCP
+rapprise doctor [--json]                # pre-flight environment validation
+rapprise setup check                    # read-only audit of appdata/env
+rapprise setup repair                   # idempotent: create missing setup files
+rapprise setup install                  # copy this binary into ~/.local/bin
 rapprise setup plugin-hook [--no-repair]
+
+rapprise help                           # or --help / -h
+rapprise --version                      # or -V
 ```
+
+`--json` emits raw JSON instead of pretty-printed fields. `--help` prints the
+full environment-variable reference.
 
 ## Configuration
 
@@ -350,7 +368,10 @@ See [the complete inventory](docs/INVENTORY.md).
 | Variable | Required | Description |
 |---|---:|---|
 | `APPRISE_URL` | no | Apprise API server base URL. Defaults to `http://localhost:8000`. |
-| `APPRISE_TOKEN` | only for protected upstreams | Optional upstream Apprise API bearer token. |
+| `APPRISE_TOKEN` | only for protected upstreams | Outbound bearer token for the upstream Apprise API. Distinct from the inbound `APPRISE_MCP_TOKEN`. |
+| `APPRISE_MAX_CONCURRENT_REQUESTS` | no | Upstream request concurrency. Default `32`, bounded `1..=1024`. |
+| `APPRISE_MAX_RESPONSE_BYTES` | no | Upstream response cap. Default `65536`, bounded `1..=4194304`. |
+| `APPRISE_HOME` | no | Data directory. Defaults to `~/.apprise` on hosts, `/data` in containers. |
 
 ### Runtime Variables
 
@@ -368,7 +389,15 @@ See [the complete inventory](docs/INVENTORY.md).
 | `APPRISE_MCP_ALLOWED_HOSTS` | empty | Additional accepted HTTP Host values. |
 | `APPRISE_MCP_ALLOWED_ORIGINS` | empty | Additional CORS origins for HTTP MCP. |
 | `APPRISE_MCP_AUTH_ALLOWED_REDIRECT_URIS` | empty | OAuth client redirect URIs. |
+| `APPRISE_MCP_AUTH_ALLOWED_EMAILS` | empty | OAuth email allowlist. |
+| `APPRISE_MCP_AUTH_SQLITE_PATH` | data-dir `auth.db` | OAuth state store path. |
+| `APPRISE_MCP_AUTH_KEY_PATH` | data-dir `auth-jwt.pem` | JWT signing key path. |
+| `APPRISE_MCP_DISABLE_STATIC_TOKEN_WITH_OAUTH` | `true` | Forbid the static bearer token from bypassing OAuth. |
 | `RUST_LOG` | `info` | Rust log filter. Stdio logs must stay off stdout. |
+
+Token TTL and rate-limit variables (`APPRISE_MCP_AUTH_*_TTL_SECS`,
+`APPRISE_MCP_AUTH_*_REQUESTS_PER_MINUTE`, `APPRISE_MCP_AUTH_MAX_PENDING_OAUTH_STATES`)
+are listed in full in [`docs/INVENTORY.md`](docs/INVENTORY.md).
 
 ## Authentication
 
@@ -443,9 +472,9 @@ not a pure argument shim.
 | Rust crate/binary | `Cargo.toml`, `Cargo.lock` | Git tag, release assets, CLI docs, install scripts. |
 | npm launcher | `packages/apprise-rmcp/package.json`, `bin/rapprise.js`, `lib/platform.js`, `scripts/install.js` | GitHub Release tag and assets named `rapprise-x86_64.tar.gz` and `rapprise-windows-x86_64.tar.gz`. |
 | GitHub Releases | `.github/workflows/*`, `scripts/install.sh`, `install.sh` | Package version, binary name, checksums, supported platforms. |
-| Docker / Compose | `Dockerfile`, `docker-compose*.yml` | Exposed port `40050`, healthcheck `/health`, env file contract. |
+| Docker / Compose | `config/Dockerfile`, `docker-compose.yml`, `docker-compose.prod.yml` | Exposed port `40050`, healthcheck `/health`, env file contract. |
 | MCP registry | `server.json` | Identity `ai.dinglebear/apprise-rmcp`, stdio package, version. |
-| Plugin | `plugins/apprise` | Bundled `rapprise` stdio and direct setup hook. |
+| Plugin | `plugins/apprise` | Bundled `rapprise` stdio only. No hooks, no `version`, no `userConfig` in manifests. |
 | Docs | `README.md`, `docs/INVENTORY.md`, `docs/QUICKSTART.md` | Current binary name, default port, action list, and env names. |
 
 Release invariant: npm, crate, registry/server metadata, manifest, GitHub tag,
@@ -459,7 +488,19 @@ cargo clippy --all-targets -- -D warnings
 cargo test
 cargo build --release
 npm --prefix packages/apprise-rmcp run check
+npm --prefix packages/apprise-rmcp test
+
+# Contract checks
+bash tests/docs-contract.sh              # docs, versions, and plugin invariants
+bash scripts/validate-plugin-layout.sh   # or: just validate-plugin
 ```
+
+`just` wraps the common loops: `just check`, `just lint`, `just fmt`,
+`just test`, `just release`, `just build-plugin`, `just docker-up`,
+`just health`. The plugin recipe is `build-plugin` — there is no `plugin-build`.
+
+`Cargo.toml` declares `rmcp = "1.6.0"`, but the caret range resolves forward and
+`Cargo.lock` pins **rmcp 1.7.0**. Trust the lock.
 
 ## Verification
 
@@ -487,25 +528,39 @@ API server and call `notify` with its tag.
 
 ### Docker / Compose
 
+`docker-compose.prod.yml` declares the `apprise-mcp` network as `external: true`,
+so create it once before the first bring-up:
+
 ```bash
 cp .env.example .env
 $EDITOR .env
+docker network create apprise-mcp
 docker compose up -d
 curl -sf http://127.0.0.1:40050/health
 ```
 
-The container stores app data under `/data`, normally mounted from
-`${HOME}/.apprise`.
+`docker-compose.yml` builds `apprise-mcp:dev` from `config/Dockerfile` and
+extends the production service. `docker-compose.prod.yml` alone runs the
+published image with `pull_policy: never`, so pull or load it first. The
+container runs read-only as UID 1000 and stores app data under `/data`, normally
+mounted from `${APPRISE_DATA_DIR:-${HOME}/.apprise}`. Override the published
+host port with `APPRISE_MCP_HOST_PORT`.
 
 ### Reverse Proxy
 
-Expose only `/mcp` and `/health`. Preserve Streamable HTTP headers, require TLS,
-and configure bearer or OAuth auth before exposing the server beyond loopback.
+Expose only `/mcp` and `/health` — plus the `lab-auth` and `/mcp/.well-known/*`
+routes when running OAuth. Keep `/ready` and `/status` internal. Preserve
+Streamable HTTP headers, require TLS, and configure bearer or OAuth auth before
+exposing the server beyond loopback.
 
 ### Plugin
 
+The plugin is bundled stdio and ships no Claude Code hooks — nothing runs
+automatically on session start, so run setup yourself once:
+
 ```bash
-claude plugin install plugins/apprise
+just build-plugin
+claude plugin install ./plugins/apprise
 rapprise setup check
 ```
 
@@ -522,19 +577,18 @@ rapprise setup check
 
 ## Related Servers
 
-- [soma](https://github.com/jmagar/soma) - RMCP runtime for provider-backed MCP servers.
-- [unifi-rmcp](https://github.com/jmagar/runifi) - UniFi controller REST API bridge.
-- [tailscale-rmcp](https://github.com/jmagar/rtailscale) - Tailscale API bridge for devices, users, and tailnet operations.
-- [unraid-rmcp](https://github.com/jmagar/runraid) - Unraid GraphQL bridge for NAS and server management.
-- [gotify-rmcp](https://github.com/jmagar/rgotify) - Gotify push notification bridge for sends, messages, apps, and clients.
-- [arcane-rmcp](https://github.com/jmagar/rarcane) - Arcane Docker management bridge for containers and related resources.
-- [yarr](https://github.com/jmagar/yarr) - Media-stack bridge for Sonarr, Radarr, Prowlarr, Plex, and related services.
-- [ytdl-rmcp](https://github.com/jmagar/rytdl) - Media download and metadata workflow server.
-- [synapse-rmcp](https://github.com/jmagar/synapse) - Local Synapse workflow server for scout and flux actions.
-- [cortex](https://github.com/jmagar/cortex) - Syslog and homelab log aggregation MCP server.
-- [axon](https://github.com/jmagar/axon) - RAG, crawl, scrape, extract, and semantic search project.
-- [labby](https://github.com/jmagar/labby) - Homelab control plane and MCP gateway project.
-- [lumen](https://github.com/jmagar/lumen) - Local semantic code search MCP server.
+- [soma](https://github.com/dinglebear-ai/soma) - RMCP runtime and scaffold for provider-backed MCP servers.
+- [unifi-rmcp](https://github.com/dinglebear-ai/runifi) - UniFi controller REST API bridge.
+- [tailscale-rmcp](https://github.com/dinglebear-ai/rtailscale) - Tailscale API bridge for devices, users, and tailnet operations.
+- [unraid](https://github.com/dinglebear-ai/unraid) - Unraid monorepo; `unraid-rs/` is the GraphQL MCP bridge (binary `runraid`).
+- [gotify-rmcp](https://github.com/dinglebear-ai/rgotify) - Gotify push notification bridge for sends, messages, apps, and clients.
+- [arcane-rmcp](https://github.com/dinglebear-ai/rarcane) - Arcane Docker management bridge for containers and related resources.
+- [yarr](https://github.com/dinglebear-ai/yarr) - Media-stack bridge for Sonarr, Radarr, Prowlarr, Plex, and related services.
+- [ytdl-rmcp](https://github.com/dinglebear-ai/rytdl) - Media download and metadata workflow server.
+- [synapse-rmcp](https://github.com/dinglebear-ai/synapse) - Local Synapse workflow server for scout and flux actions.
+- [cortex](https://github.com/dinglebear-ai/cortex) - Syslog and homelab log aggregation MCP server.
+- [axon](https://github.com/dinglebear-ai/axon) - RAG, crawl, scrape, extract, and semantic search project.
+- [labby](https://github.com/dinglebear-ai/labby) - Homelab control plane and MCP gateway project.
 
 ## Documentation
 

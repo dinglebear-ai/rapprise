@@ -51,5 +51,11 @@ just build-plugin
 claude plugin install ./plugins/apprise
 ```
 
-Its hook runs bundled `rapprise setup plugin-hook`. Configure upstream values
-in process env or `${APPRISE_HOME:-~/.apprise}/.env`.
+The plugin ships no Claude Code hooks — nothing runs automatically on session
+start. Configure upstream values in process env or
+`${APPRISE_HOME:-~/.apprise}/.env`, then verify once by hand:
+
+```bash
+rapprise setup check    # read-only audit
+rapprise setup repair   # idempotent fix-up
+```

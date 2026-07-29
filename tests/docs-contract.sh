@@ -10,10 +10,16 @@ test -L GEMINI.md && test "$(readlink GEMINI.md)" = "CLAUDE.md"
 
 for file in server.json release-please-config.json .release-please-manifest.json \
   plugins/apprise/.claude-plugin/plugin.json \
-  plugins/apprise/.codex-plugin/plugin.json plugins/apprise/.mcp.json \
-  plugins/apprise/hooks/hooks.json; do
+  plugins/apprise/.codex-plugin/plugin.json plugins/apprise/.mcp.json; do
   jq -e . "$file" >/dev/null
 done
+
+# The plugin ships no Claude Code hooks. Keep it that way.
+if [ -e plugins/apprise/hooks ]; then
+  echo "plugins/apprise must not ship hooks" >&2
+  exit 1
+fi
+test "$(jq -r 'has("hooks")' plugins/apprise/.claude-plugin/plugin.json)" = false
 
 test "$(jq -r .name server.json)" = "ai.dinglebear/apprise-rmcp"
 test "$(jq -r .version server.json)" = "$(jq -r '.packages[0].version' server.json)"

@@ -127,25 +127,27 @@ fn setup_repair_refuses_symlinked_env_file() {
     assert_eq!(std::fs::read_to_string(target).unwrap(), "KEEP=this\n");
 }
 
-/// The plugin hook config must call the binary directly (no plugin-setup.sh).
+/// The plugin ships no Claude Code hooks. Setup is operator-invoked
+/// (`rapprise setup check` / `setup repair`), not session-triggered.
 #[test]
-fn claude_hooks_call_binary_directly() {
-    let hooks: Value =
-        serde_json::from_str(&std::fs::read_to_string("plugins/apprise/hooks/hooks.json").unwrap())
-            .unwrap();
-    for hook_name in ["SessionStart", "ConfigChange"] {
-        let command = hooks["hooks"][hook_name][0]["hooks"][0]["command"]
-            .as_str()
-            .unwrap();
-        assert_eq!(
-            command,
-            "${CLAUDE_PLUGIN_ROOT}/bin/rapprise setup plugin-hook"
-        );
-    }
+fn plugin_ships_no_hooks() {
+    assert!(
+        !std::path::Path::new("plugins/apprise/hooks").exists(),
+        "plugins/apprise must not ship hooks"
+    );
+    let manifest: Value = serde_json::from_str(
+        &std::fs::read_to_string("plugins/apprise/.claude-plugin/plugin.json").unwrap(),
+    )
+    .unwrap();
+    assert!(
+        manifest.get("hooks").is_none(),
+        "plugin manifest must not declare hooks"
+    );
 }
 
-/// The hook calls the binary directly now, so `apply_plugin_options()` (run
-/// before `Config::load()`) must map `CLAUDE_PLUGIN_OPTION_*` into the binary's
+/// `setup plugin-hook` is still a supported CLI entry point for operators and
+/// external automation, so `apply_plugin_options()` (run before
+/// `Config::load()`) must map `CLAUDE_PLUGIN_OPTION_*` into the binary's
 /// `APPRISE_*` env vars. Supplying `APPRISE_URL` only via the plugin option
 /// makes the `missing_apprise_url` blocking failure disappear — proving the
 /// mapping reaches the loaded config.
