@@ -1,6 +1,5 @@
 use rmcp::model::{
-    GetPromptRequestParams, GetPromptResult, ListPromptsResult, Prompt, PromptMessage,
-    PromptMessageRole,
+    GetPromptRequestParams, GetPromptResult, ListPromptsResult, Prompt, PromptMessage, Role,
 };
 
 pub(super) fn list_prompts() -> ListPromptsResult {
@@ -17,7 +16,7 @@ pub(super) fn list_prompts() -> ListPromptsResult {
 pub(super) fn get_prompt(request: GetPromptRequestParams) -> anyhow::Result<GetPromptResult> {
     match request.name.as_str() {
         "send_alert" => Ok(GetPromptResult::new(vec![PromptMessage::new_text(
-            PromptMessageRole::User,
+            Role::User,
             "Use the apprise tool with action=notify to send a critical alert. \
              Set type=failure to indicate urgency. Provide a clear, concise title \
              summarising the problem and a body with enough detail for the recipient \

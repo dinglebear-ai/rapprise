@@ -2,11 +2,14 @@
 members = [".", "xtask"]
 resolver = "2"
 
+[workspace.lints.clippy]
+mod_module_files = "deny"
+
 [package]
 name = "apprise-mcp"
 version = "0.2.0"
-edition = "2021"
-rust-version = "1.90"
+edition = "2024"
+rust-version = "1.92"
 categories = ["command-line-utilities", "development-tools"]
 keywords = ["mcp", "apprise", "notifications", "rmcp", "homelab"]
 repository = "https://github.com/jmagar/rapprise"
@@ -24,7 +27,7 @@ tokio = { version = "1", features = ["full"] }
 
 # HTTP / MCP transport
 axum = "0.8"
-rmcp = { version = "1.6.0", default-features = false, features = [
+rmcp = { version = "=3.0.0-beta.2", default-features = false, features = [
   "server",
   "macros",
   "transport-streamable-http-server",
@@ -67,8 +70,11 @@ test-support = []
 [dev-dependencies]
 apprise-mcp = { path = ".", features = ["test-support"] }
 tokio = { version = "1", features = ["full"] }
-rmcp = { version = "1.6.0", default-features = false, features = [
+rmcp = { version = "=3.0.0-beta.2", default-features = false, features = [
   "client",
   "transport-child-process",
 ] }
 tower = { version = "0.5", features = ["util"] }
+
+[lints]
+workspace = true
