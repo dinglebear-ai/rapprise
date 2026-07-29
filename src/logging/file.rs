@@ -75,10 +75,10 @@ impl Write for RollingFileWriter {
             .map_err(|_| io::Error::other("log mutex poisoned"))?;
 
         // Check size before writing; truncate if needed
-        if let Ok(meta) = guard.metadata() {
-            if meta.len() >= self.max_bytes {
-                guard.set_len(0)?;
-            }
+        if let Ok(meta) = guard.metadata()
+            && meta.len() >= self.max_bytes
+        {
+            guard.set_len(0)?;
         }
 
         guard.write(buf)

@@ -991,10 +991,10 @@ fn which_binary(name: &str) -> Option<String> {
 fn dir_size_mb(path: &std::path::Path) -> Option<f64> {
     let mut total: u64 = 0;
     for entry in std::fs::read_dir(path).ok()?.flatten() {
-        if let Ok(meta) = entry.metadata() {
-            if meta.is_file() {
-                total += meta.len();
-            }
+        if let Ok(meta) = entry.metadata()
+            && meta.is_file()
+        {
+            total += meta.len();
         }
     }
     Some(total as f64 / (1024.0 * 1024.0))
