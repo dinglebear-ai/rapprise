@@ -9,7 +9,6 @@ permissions:
 
 env:
   CARGO_INCREMENTAL: "0"
-  SOLDR_CACHE_DIR: ${{ github.workspace }}/../.soldr-cache
 
 jobs:
   release-meta:
@@ -47,8 +46,8 @@ jobs:
         env:
           EXPECTED_VERSION: ${{ needs.release-meta.outputs.tag_name }}
         run: bash scripts/check-version-sync.sh
-      - name: Install Rust + soldr
-        uses: ./.github/actions/setup-rust-soldr
+      - name: Install Rust and kache
+        uses: ./.github/actions/setup-rust-kache
         with:
           components: rustfmt,clippy
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
@@ -98,8 +97,8 @@ jobs:
         with:
           ref: ${{ needs.release-meta.outputs.tag_name }}
           persist-credentials: false
-      - name: Install Rust + soldr
-        uses: ./.github/actions/setup-rust-soldr
+      - name: Install Rust and kache
+        uses: ./.github/actions/setup-rust-kache
         with:
           targets: ${{ matrix.target }}
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
