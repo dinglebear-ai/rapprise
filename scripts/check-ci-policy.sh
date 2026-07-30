@@ -20,19 +20,19 @@ for workflow in sorted(workflow_dir.glob("*.yml")):
             errors.append(f"{workflow}:{line_no}: external Action is not pinned to a full commit SHA")
 
 docker = (workflow_dir / "docker-publish.yml").read_text()
-for required in ["workflow_run:", "exit-code: \"1\"", "actions/attest-sbom@"]:
+for required in [
+    "release:\n    types: [published]",
+    "dinglebear-ai/workflows/.github/workflows/hosted-container-release.yml@d7bbe71ddc1157e32ed0bebf928fc07438ba58b0",
+    "security-events: write",
+    "needs: preflight",
+    "git merge-base --is-ancestor HEAD origin/main",
+    "needs: container",
+]:
     if required not in docker:
         errors.append(f"docker-publish.yml: missing policy marker {required!r}")
-scan_amd64 = docker.find("Blocking AMD64 vulnerability scan")
-login = docker.find("Log in only after")
-push = docker.find("Push scanned platform images")
-if not (0 <= scan_amd64 < login < push):
-    errors.append("docker-publish.yml: the amd64 scan must precede registry login and push")
-if "workflows: [CI, Release]" not in docker or "release:" in docker.split("permissions:", 1)[0]:
-    errors.append("docker-publish.yml: publication must follow successful CI or Release workflows, not a direct release event")
-for marker in ["workflow_run.event == 'push'", "workflow_run.head_repository.full_name == github.repository", "git merge-base --is-ancestor HEAD origin/main"]:
-    if marker not in docker:
-        errors.append(f"docker-publish.yml: privileged workflow_run is missing trust gate {marker!r}")
+for forbidden in ["workflow_run:", "workflow_dispatch:", "self-hosted"]:
+    if forbidden in docker:
+        errors.append(f"docker-publish.yml: release publication must not contain {forbidden!r}")
 
 release = (workflow_dir / "release.yml").read_text()
 if "workflow_dispatch:" in release:

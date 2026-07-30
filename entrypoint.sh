@@ -4,6 +4,12 @@ set -eu
 BINARY="/usr/local/bin/rapprise"
 DATA_DIR="${DATA_DIR:-/data}"
 
+case "${1:-}" in
+    --help|-h|--version|-V)
+        exec "${BINARY}" "$@"
+        ;;
+esac
+
 if [ -z "${APPRISE_URL:-}" ]; then
     echo "ERROR: APPRISE_URL is not set" >&2
     exit 1
