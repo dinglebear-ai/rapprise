@@ -1,3 +1,5 @@
+//! Core Apprise client, service, configuration, and MCP transport library.
+
 pub mod app;
 pub mod apprise;
 pub mod config;

@@ -12,7 +12,7 @@ env:
 
 jobs:
   release-meta:
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       tag_name: ${{ steps.meta.outputs.tag_name }}
@@ -30,7 +30,7 @@ jobs:
 
   preflight:
     needs: release-meta
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -46,9 +46,10 @@ jobs:
         env:
           EXPECTED_VERSION: ${{ needs.release-meta.outputs.tag_name }}
         run: bash scripts/check-version-sync.sh
-      - name: Install Rust and kache
-        uses: ./.github/actions/setup-rust-kache
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4
         with:
+          toolchain: "1.97.1"
           components: rustfmt,clippy
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
         with:
@@ -90,16 +91,17 @@ jobs:
             artifact: rapprise-windows-x86_64.exe
             archive: rapprise-windows-x86_64.tar.gz
             ext: ".exe"
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ needs.release-meta.outputs.tag_name }}
           persist-credentials: false
-      - name: Install Rust and kache
-        uses: ./.github/actions/setup-rust-kache
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4
         with:
+          toolchain: "1.97.1"
           targets: ${{ matrix.target }}
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
         if: matrix.target == 'x86_64-pc-windows-msvc'
@@ -136,7 +138,7 @@ jobs:
 
   build-installer:
     needs: [release-meta, preflight]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -165,7 +167,7 @@ jobs:
 
   publish-release:
     needs: [release-meta, preflight, build, build-installer]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -188,7 +190,7 @@ jobs:
 
   npm:
     needs: [release-meta, preflight, publish-release]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: npm
     permissions:

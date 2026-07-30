@@ -1,3 +1,5 @@
+//! Repository automation tasks for release and maintenance operations.
+
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitStatus};
 
