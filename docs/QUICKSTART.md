@@ -1,3 +1,9 @@
+---
+title: "apprise-rmcp Quickstart"
+created: "2026-07-30"
+updated: "2026-07-30"
+---
+
 # apprise-rmcp quickstart
 
 Prerequisites are an Apprise API server plus Rust 1.90+ for source builds or
@@ -6,7 +12,7 @@ have `gh.exe` on `PATH`. `APPRISE_URL` is optional and defaults to
 `http://localhost:8000`.
 
 ```bash
-git clone https://github.com/jmagar/rapprise
+git clone https://github.com/dinglebear-ai/rapprise
 cd apprise-rmcp
 cargo build --release
 ./target/release/rapprise health --json

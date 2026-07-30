@@ -1,16 +1,16 @@
 {
   "name": "apprise-rmcp",
   "version": "0.2.0",
-  "description": "Node launcher for the Apprise Rust MCP server and rapprise CLI for multi-backend notifications.",
+  "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
   "license": "MIT",
-  "homepage": "https://github.com/jmagar/rapprise#readme",
+  "homepage": "https://rapprise.dinglebear.ai",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jmagar/rapprise.git",
+    "url": "git+https://github.com/dinglebear-ai/rapprise.git",
     "directory": "packages/apprise-rmcp"
   },
   "bugs": {
-    "url": "https://github.com/jmagar/rapprise/issues"
+    "url": "https://github.com/dinglebear-ai/rapprise/issues"
   },
   "bin": {
     "apprise-rmcp": "bin/rapprise.js",

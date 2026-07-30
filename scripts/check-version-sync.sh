@@ -13,10 +13,12 @@ expected = sys.argv[1].removeprefix("v")
 values = {}
 
 cargo = Path("Cargo.toml").read_text()
-match = re.search(r"(?ms)^\[package\].*?^version\s*=\s*\"([^\"]+)\"", cargo)
+match = re.search(
+    r"(?ms)^\[workspace\.package\].*?^version\s*=\s*\"([^\"]+)\"", cargo
+) or re.search(r"(?ms)^\[package\].*?^version\s*=\s*\"([^\"]+)\"", cargo)
 if not match:
-    raise SystemExit("[version-sync] Cargo.toml package version is missing")
-values["Cargo.toml package.version"] = match.group(1)
+    raise SystemExit("[version-sync] Cargo.toml package/workspace.package version is missing")
+values["Cargo.toml canonical version"] = match.group(1)
 
 npm = json.loads(Path("packages/apprise-rmcp/package.json").read_text())
 values["packages/apprise-rmcp/package.json version"] = npm["version"]
@@ -32,7 +34,7 @@ values["server.json buildInfo.version"] = server["_meta"]["io.modelcontextprotoc
 manifest = json.loads(Path(".release-please-manifest.json").read_text())
 values[".release-please-manifest.json root"] = manifest["."]
 
-canonical = expected or values["Cargo.toml package.version"]
+canonical = expected or values["Cargo.toml canonical version"]
 mismatches = {name: value for name, value in values.items() if value != canonical}
 if mismatches:
     print(f"[version-sync] FAIL: expected every release artifact at {canonical}", file=sys.stderr)

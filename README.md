@@ -1,7 +1,6 @@
 # apprise-rmcp
 
-`apprise-rmcp` is a Rust MCP server and CLI for sending notifications through
-an [Apprise API](https://github.com/caronc/apprise-api) server.
+MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.
 
 It exposes one MCP tool, `apprise`, plus the `rapprise` CLI. Agents can send
 tagged notifications through a preconfigured Apprise server, run one-off
@@ -83,7 +82,7 @@ the short Rust CLI name `rapprise`.
 
 Releases publish SHA-256 files and offline GitHub build-provenance bundles. The
 installers verify both the checksum and provenance identity with GitHub CLI 2.68+.
-macOS and ARM64 are not currently mapped by the npm launcher.
+The npm launcher supports x86_64 Linux and Windows release assets.
 
 ### npm / npx
 
@@ -118,15 +117,15 @@ Replace `version` with the release tag you want; `v0.2.0` is current.
 
 ```bash
 version=v0.2.0
-base="https://github.com/jmagar/rapprise/releases/download/${version}/rapprise-installer.sh"
+base="https://github.com/dinglebear-ai/rapprise/releases/download/${version}/rapprise-installer.sh"
 curl -fsSLO "$base"
 curl -fsSLO "$base.sha256"
 curl -fsSLO "$base.sigstore.json"
 sha256sum --check rapprise-installer.sh.sha256
 gh attestation verify rapprise-installer.sh \
-  --repo jmagar/rapprise \
+  --repo dinglebear-ai/rapprise \
   --bundle rapprise-installer.sh.sigstore.json \
-  --signer-workflow jmagar/rapprise/.github/workflows/release.yml \
+  --signer-workflow dinglebear-ai/rapprise/.github/workflows/release.yml \
   --source-ref "refs/tags/${version}" \
   --deny-self-hosted-runners
 APPRISE_RMCP_VERSION="$version" bash rapprise-installer.sh

@@ -2,11 +2,11 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.dinglebear/apprise-rmcp",
   "title": "Apprise RMCP",
-  "description": "Rust MCP server and CLI for Apprise notification fan-out across dozens of delivery backends.",
+  "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
   "version": "0.2.0",
-  "websiteUrl": "https://github.com/jmagar/rapprise",
+  "websiteUrl": "https://rapprise.dinglebear.ai",
   "repository": {
-    "url": "https://github.com/jmagar/rapprise",
+    "url": "https://github.com/dinglebear-ai/rapprise",
     "source": "github",
     "id": "1238227302"
   },
@@ -69,8 +69,8 @@
           "format": "string",
           "isRequired": false,
           "isSecret": false,
-          "default": "jmagar/rapprise",
-          "placeholder": "jmagar/rapprise"
+          "default": "dinglebear-ai/rapprise",
+          "placeholder": "dinglebear-ai/rapprise"
         },
         {
           "name": "APPRISE_RMCP_RELEASE_BASE_URL",
@@ -103,7 +103,7 @@
       },
       "buildInfo": {
         "version": "0.2.0",
-        "repository": "https://github.com/jmagar/rapprise"
+        "repository": "https://github.com/dinglebear-ai/rapprise"
       }
     }
   }

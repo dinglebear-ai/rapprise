@@ -1,3 +1,9 @@
+---
+title: "Technology Choices"
+created: "2026-07-30"
+updated: "2026-07-30"
+---
+
 # Technology choices
 
 - Rust/Tokio: native `rapprise` for CLI, stdio, and HTTP.

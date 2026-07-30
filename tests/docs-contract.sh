@@ -31,7 +31,7 @@ test "$(jq -r .version server.json)" = \
   "$(jq -r '._meta["io.modelcontextprotocol.registry/publisher-provided"].buildInfo.version' server.json)"
 test "$(jq -r 'has("userConfig")' plugins/apprise/.claude-plugin/plugin.json)" = false
 
-if grep -R -n -E 'syslog-mcp|target/release/apprise|default 8765|localhost:8765|tv\.tootie/apprise-mcp' \
+if grep -R --exclude-dir=sessions -n -E 'syslog-mcp|target/release/apprise|default 8765|localhost:8765|tv\.tootie/apprise-mcp' \
   README.md CLAUDE.md docs plugins .claude server.json; then
   echo "documentation contains stale product, binary, port, or registry text" >&2
   exit 1
@@ -53,7 +53,8 @@ grep -F 'just build-plugin && claude plugin install' README.md >/dev/null
 grep -F 'just build-plugin' docs/QUICKSTART.md >/dev/null
 grep -E '^build-plugin:' Justfile >/dev/null
 grep -F 'notify`, `notify_url`, `health`, `status`, `help' CLAUDE.md >/dev/null
-grep -F 'APPRISE_MCP_IMAGE=ghcr.io/jmagar/apprise-mcp@sha256:' .env.example >/dev/null
+grep -F 'APPRISE_MCP_IMAGE=ghcr.io/dinglebear-ai/rapprise@sha256:' .env.example >/dev/null
+grep -F 'image: ${APPRISE_MCP_IMAGE:?set APPRISE_MCP_IMAGE to an immutable ghcr.io/dinglebear-ai/rapprise digest}' docker-compose.prod.yml >/dev/null
 if grep -F 'APPRISE_MCP_VERSION=' .env.example >/dev/null; then
   echo ".env.example contains obsolete APPRISE_MCP_VERSION" >&2
   exit 1

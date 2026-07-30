@@ -3,13 +3,13 @@ use std::time::Duration;
 
 use apprise_mcp::apprise::{AppriseClient, NotifyType, UpstreamError};
 use apprise_mcp::config::AppriseConfig;
-use apprise_mcp::mcp::{build_auth_layer, AuthPolicy};
-use axum::body::{to_bytes, Body};
+use apprise_mcp::mcp::{AuthPolicy, build_auth_layer};
+use axum::Router;
+use axum::body::{Body, to_bytes};
 use axum::extract::{Request, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::routing::{any, get};
-use axum::Router;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use tower::ServiceExt;
 
 #[derive(Debug)]

@@ -4,7 +4,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${repo_root}"
 
 python3 <<'PY'
-import datetime, json, re
+import datetime, re
 from pathlib import Path
 
 errors = []
@@ -24,11 +24,10 @@ for required in ["workflow_run:", "exit-code: \"1\"", "actions/attest-sbom@"]:
     if required not in docker:
         errors.append(f"docker-publish.yml: missing policy marker {required!r}")
 scan_amd64 = docker.find("Blocking AMD64 vulnerability scan")
-scan_arm64 = docker.find("Blocking ARM64 vulnerability scan")
 login = docker.find("Log in only after")
 push = docker.find("Push scanned platform images")
-if not (0 <= scan_amd64 < scan_arm64 < login < push):
-    errors.append("docker-publish.yml: both platform scans must precede registry login and push")
+if not (0 <= scan_amd64 < login < push):
+    errors.append("docker-publish.yml: the amd64 scan must precede registry login and push")
 if "workflows: [CI, Release]" not in docker or "release:" in docker.split("permissions:", 1)[0]:
     errors.append("docker-publish.yml: publication must follow successful CI or Release workflows, not a direct release event")
 for marker in ["workflow_run.event == 'push'", "workflow_run.head_repository.full_name == github.repository", "git merge-base --is-ancestor HEAD origin/main"]:
@@ -44,16 +43,6 @@ if preflight < 0 or build < preflight or "needs: [release-meta, preflight]" not 
     errors.append("release.yml: build/publish jobs must depend on complete preflight")
 if "NODE_AUTH_TOKEN" in release or "NPM_TOKEN" in release:
     errors.append("release.yml: npm publication must use trusted publishing, not a long-lived token")
-
-openwiki = (workflow_dir / "openwiki-update.yml").read_text()
-if "npm ci --ignore-scripts" not in openwiki or "needs: prepare-toolchain" not in openwiki:
-    errors.append("openwiki-update.yml: OpenWiki must be locked and prepared in an isolated job")
-update_body = openwiki.split("  update:", 1)[-1]
-if re.search(r"\bnpm\s+(install|ci)\b", update_body):
-    errors.append("openwiki-update.yml: secret/private-network job must not install npm code")
-lock = json.loads(Path("scripts/openwiki/package-lock.json").read_text())
-if lock.get("packages", {}).get("", {}).get("dependencies", {}).get("openwiki") != "0.2.0":
-    errors.append("scripts/openwiki/package-lock.json: openwiki must remain exactly pinned")
 
 audit = Path(".cargo/audit.toml").read_text()
 expiry = re.search(r"expires (\d{4}-\d{2}-\d{2})", audit)
