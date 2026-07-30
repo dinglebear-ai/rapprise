@@ -21,14 +21,10 @@ destinations, schedule sends, or retry beyond upstream behavior.
 
 ## Workspace layout
 
-Two-member Cargo workspace (`resolver = "2"`): the root `apprise-mcp` package
-and `xtask`. Edition 2021, MSRV 1.90 (`rust-version`). There is no
-`[workspace.package]`, `[workspace.dependencies]`, or `[workspace.lints]` table
-here — dependency versions live in the root `Cargo.toml` only.
-
-`Cargo.toml` declares `rmcp = "1.6.0"`, but that caret range already resolved
-forward: `Cargo.lock` pins **rmcp 1.7.0**. Trust the lock, not the manifest.
-Do not "fix" the declaration by bumping it without checking what the lock does.
+Two-member Cargo workspace (`resolver = "3"`): the root `apprise-mcp` package
+and `xtask`. Both inherit Rust 1.97.1, edition 2024, metadata, dependencies,
+and fleet lints from the workspace tables. `rmcp` is exactly pinned to
+`3.0.0-beta.2`, matching `Cargo.lock`.
 
 `lab-auth` comes from `github.com/dinglebear-ai/labby.git` at a pinned rev.
 
@@ -120,13 +116,6 @@ hand-edit versions. `tests/docs-contract.sh` cross-checks all six.
 
 Releases publish SHA-256 sums and GitHub build-provenance bundles; installers
 verify both and require GitHub CLI 2.68+.
-
-## Known drift
-
-- `Cargo.toml` `repository`/`homepage`, `packages/apprise-rmcp/package.json`,
-  and both plugin manifests still point at `github.com/jmagar/rapprise`. That
-  resolves only through GitHub's transfer redirect to `dinglebear-ai/rapprise`.
-- The declared `rmcp = "1.6.0"` is fiction; see the workspace section.
 
 Use `bd` for all tracking: run `bd prime`, claim before editing, and close
 completed work.

@@ -1,8 +1,8 @@
 {
   "name": "apprise-rmcp",
-  "description": "Apprise RMCP server — universal push notification bridge for Codex.",
-  "homepage": "https://github.com/jmagar/rapprise",
-  "repository": "https://github.com/jmagar/rapprise",
+  "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
+  "homepage": "https://rapprise.dinglebear.ai",
+  "repository": "https://github.com/dinglebear-ai/rapprise",
   "license": "MIT",
   "keywords": [
     "apprise",
@@ -23,7 +23,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/jmagar/rapprise",
+    "websiteURL": "https://github.com/dinglebear-ai/rapprise",
     "defaultPrompt": [
       "Send an alert to all configured Apprise notification services.",
       "Notify the ops-alerts tag that a deployment completed successfully.",

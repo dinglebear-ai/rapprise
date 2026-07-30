@@ -1,3 +1,9 @@
+---
+title: "apprise-rmcp Contract Inventory"
+created: "2026-07-30"
+updated: "2026-07-30"
+---
+
 # apprise-rmcp contract inventory
 
 ## Public surfaces
@@ -89,7 +95,7 @@ substitute for the process bind/auth invariant.
 | Plugin | platform of bundled binary | build with `just build-plugin`; stdio only |
 | Container | image-supported Linux | pin immutable version/digest |
 
-macOS and Linux ARM64 are not mapped by the npm launcher.
+Only x86_64 Linux and Windows release assets are mapped by the npm launcher.
 Releases publish offline GitHub build-provenance bundles. Installers verify the
 archive against the release workflow and tag and require GitHub CLI 2.68+.
 

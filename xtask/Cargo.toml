@@ -1,8 +1,12 @@
 [package]
 name = "xtask"
-version = "0.2.0"
-edition = "2024"
-rust-version = "1.97.1"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
 publish = false
 
 [[bin]]
@@ -10,7 +14,7 @@ name = "xtask"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1"
+anyhow.workspace = true
 
 [lints]
 workspace = true

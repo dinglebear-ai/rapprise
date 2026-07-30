@@ -1,4 +1,4 @@
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 pub(super) const APPRISE_ACTIONS: &[&str] = &["notify", "notify_url", "health", "status", "help"];
 

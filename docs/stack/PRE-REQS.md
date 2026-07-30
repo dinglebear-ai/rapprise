@@ -1,3 +1,9 @@
+---
+title: "Prerequisites"
+created: "2026-07-30"
+updated: "2026-07-30"
+---
+
 # Prerequisites
 
 Runtime requires a reachable Apprise API (default `http://localhost:8000`).

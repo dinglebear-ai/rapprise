@@ -7,7 +7,7 @@ use thiserror::Error;
 
 use crate::app::AppriseService;
 use crate::apprise::{AppriseClient, UpstreamError};
-use crate::config::{default_data_dir, AuthMode, Config};
+use crate::config::{AuthMode, Config, default_data_dir};
 use crate::mcp::{AppState, AuthPolicy};
 
 #[derive(Debug, Error)]
@@ -22,7 +22,9 @@ pub enum RuntimeError {
     },
     #[error("MCP bind host {host:?} resolved to no addresses")]
     NoResolvedAddress { host: String },
-    #[error("APPRISE_MCP_NO_AUTH is only allowed when the selected bind address for {host:?} is loopback")]
+    #[error(
+        "APPRISE_MCP_NO_AUTH is only allowed when the selected bind address for {host:?} is loopback"
+    )]
     UnsafeNoAuth { host: String },
     #[error("APPRISE_MCP_TOKEN is required for bearer authentication")]
     MissingBearerToken,
@@ -224,11 +226,13 @@ mod tests {
 
     #[tokio::test]
     async fn bind_resolution_returns_the_address_that_will_be_bound() {
-        assert!(resolve_bind_addrs("localhost", 40050)
-            .await
-            .unwrap()
-            .iter()
-            .all(|address| address.ip().is_loopback()));
+        assert!(
+            resolve_bind_addrs("localhost", 40050)
+                .await
+                .unwrap()
+                .iter()
+                .all(|address| address.ip().is_loopback())
+        );
         assert_eq!(
             resolve_bind_addrs("0.0.0.0", 40050).await.unwrap(),
             vec!["0.0.0.0:40050".parse().unwrap()]
@@ -337,11 +341,13 @@ mod tests {
         let reconciled = build_oauth_state(&config).await.unwrap();
         let rows = reconciled.store.list_allowed_users().await.unwrap();
         assert!(!rows.iter().any(|row| row.email == "old@example.test"));
-        assert!(rows
-            .iter()
-            .any(|row| { row.email == "new@example.test" && row.added_by == "config" }));
-        assert!(rows
-            .iter()
-            .any(|row| { row.email == "manual@example.test" && row.added_by == "admin" }));
+        assert!(
+            rows.iter()
+                .any(|row| { row.email == "new@example.test" && row.added_by == "config" })
+        );
+        assert!(
+            rows.iter()
+                .any(|row| { row.email == "manual@example.test" && row.added_by == "admin" })
+        );
     }
 }
