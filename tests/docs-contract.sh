@@ -26,7 +26,7 @@ test "$(jq -r .version server.json)" = "$(jq -r '.packages[0].version' server.js
 test "$(jq -r .version server.json)" = "$(jq -r '."."' .release-please-manifest.json)"
 test "$(jq -r .version server.json)" = "$(node -p 'require("./packages/apprise-rmcp/package.json").version')"
 test "$(jq -r .version server.json)" = \
-  "$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "apprise-mcp") | .version')"
+  "$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["workspace"]["package"]["version"])')"
 test "$(jq -r .version server.json)" = \
   "$(jq -r '._meta["io.modelcontextprotocol.registry/publisher-provided"].buildInfo.version' server.json)"
 test "$(jq -r 'has("userConfig")' plugins/apprise/.claude-plugin/plugin.json)" = false
