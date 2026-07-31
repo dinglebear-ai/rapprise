@@ -22,7 +22,7 @@ for workflow in sorted(workflow_dir.glob("*.yml")):
 docker = (workflow_dir / "docker-publish.yml").read_text()
 for required in [
     "release:\n    types: [published]",
-    "dinglebear-ai/workflows/.github/workflows/hosted-container-release.yml@eb5f36cf517ffc949aca1c81e2ccbc71b5a85267",
+    "dinglebear-ai/workflows/.github/workflows/hosted-container-release.yml@542ea7b7e5ca2d4e21f3277bfcf158584fee90ec",
     "security-events: write",
     "needs: preflight",
     "git merge-base --is-ancestor HEAD origin/main",
