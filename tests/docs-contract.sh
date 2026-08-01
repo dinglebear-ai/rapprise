@@ -42,7 +42,7 @@ fi
 expected_plugin_command='${CLAUDE_PLUGIN_ROOT}/bin/rapprise'
 test "$(jq -r '.mcpServers.apprise.command' plugins/apprise/.mcp.json)" = \
   "$expected_plugin_command"
-test -z "$(find .claude/plugins/apprise-mcp -type f -print 2>/dev/null)"
+test -z "$(find .claude/plugins/apprise-mcp -type f -print 2>/dev/null || true)"
 
 grep -F 'gh attestation verify rapprise-installer.sh' README.md >/dev/null
 if grep -F 'raw.githubusercontent.com/jmagar/rapprise' README.md >/dev/null; then
