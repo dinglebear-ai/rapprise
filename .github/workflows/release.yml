@@ -12,7 +12,7 @@ env:
 
 jobs:
   release-meta:
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       tag_name: ${{ steps.meta.outputs.tag_name }}
@@ -30,7 +30,7 @@ jobs:
 
   preflight:
     needs: release-meta
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -90,7 +90,7 @@ jobs:
             artifact: rapprise-windows-x86_64.exe
             archive: rapprise-windows-x86_64.tar.gz
             ext: ".exe"
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -136,7 +136,7 @@ jobs:
 
   build-installer:
     needs: [release-meta, preflight]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -165,7 +165,7 @@ jobs:
 
   publish-release:
     needs: [release-meta, preflight, build, build-installer]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write
@@ -188,7 +188,7 @@ jobs:
 
   npm:
     needs: [release-meta, preflight, publish-release]
-    runs-on: [self-hosted, unraid]
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: npm
     permissions:
