@@ -16,7 +16,7 @@ updated: "2026-07-30"
 | MCP tool | `apprise` |
 | MCP HTTP/liveness | `POST /mcp`, `GET /health`, port `40050` |
 | Upstream default | `http://localhost:8000` |
-| Registry identity | `ai.dinglebear/apprise-rmcp` |
+| Registry identity | `ai.dinglebear/rapprise` |
 
 ## MCP actions
 

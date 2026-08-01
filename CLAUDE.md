@@ -5,7 +5,7 @@
 
 ## Product contract
 
-- Repository/npm package: `apprise-rmcp`
+- Repository: `rapprise`; npm package: `@dinglebear/rapprise-mcp` (`packages/apprise-rmcp/`)
 - Git remote: `git@github.com:dinglebear-ai/rapprise.git`, default branch `main`
 - Rust crate/service: `apprise-mcp`
 - Executable: `rapprise`
@@ -14,7 +14,7 @@
 - One `apprise` tool: `notify`, `notify_url`, `health`, `status`, `help`
 - Prompt: `send_alert`
 - Data: `${APPRISE_HOME:-~/.apprise}` on hosts, `/data` in containers
-- Registry identity: `ai.dinglebear/apprise-rmcp`
+- Registry identity: `ai.dinglebear/rapprise`
 
 This server is a thin projection over the Apprise API. It does not store
 destinations, schedule sends, or retry beyond upstream behavior.

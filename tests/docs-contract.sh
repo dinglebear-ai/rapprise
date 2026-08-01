@@ -21,7 +21,7 @@ if [ -e plugins/apprise/hooks ]; then
 fi
 test "$(jq -r 'has("hooks")' plugins/apprise/.claude-plugin/plugin.json)" = false
 
-test "$(jq -r .name server.json)" = "ai.dinglebear/apprise-rmcp"
+test "$(jq -r .name server.json)" = "ai.dinglebear/rapprise"
 test "$(jq -r .version server.json)" = "$(jq -r '.packages[0].version' server.json)"
 test "$(jq -r .version server.json)" = "$(jq -r '."."' .release-please-manifest.json)"
 test "$(jq -r .version server.json)" = "$(node -p 'require("./packages/apprise-rmcp/package.json").version')"

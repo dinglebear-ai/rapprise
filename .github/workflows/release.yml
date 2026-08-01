@@ -204,6 +204,10 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
       - run: npm install --global npm@11.5.2 --ignore-scripts
+      - name: Validate npm publication identity
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm whoami >/dev/null
       - run: npm test --prefix packages/apprise-rmcp
       - run: npm run check --prefix packages/apprise-rmcp
       - run: npm pack --dry-run --json ./packages/apprise-rmcp
@@ -212,11 +216,13 @@ jobs:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
         run: |
           version="${VERSION#v}"
-          if npm view "apprise-rmcp@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
-      - name: Publish using npm trusted publishing
+          if npm view "@dinglebear/rapprise-mcp@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
+      - name: Publish npm package
         if: steps.published.outputs.exists == 'false'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public ./packages/apprise-rmcp
       - name: Smoke published launcher
         env:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
-        run: npm_config_cache="$(mktemp -d)" npx -y "apprise-rmcp@${VERSION#v}" --version
+        run: npm_config_cache="$(mktemp -d)" npx -y "@dinglebear/rapprise-mcp@${VERSION#v}" --version
