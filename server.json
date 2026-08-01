@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "ai.dinglebear/apprise-rmcp",
+  "name": "ai.dinglebear/rapprise",
   "title": "Apprise RMCP",
   "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
   "version": "0.2.0",
@@ -24,7 +24,7 @@
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "apprise-rmcp",
+      "identifier": "@dinglebear/rapprise",
       "version": "0.2.0",
       "runtimeHint": "npx",
       "packageArguments": [
@@ -99,7 +99,8 @@
       "namespace": "ai.dinglebear",
       "dnsDomain": "dinglebear.ai",
       "distribution": {
-        "nodePackage": "apprise-rmcp"
+        "nodePackage": "@dinglebear/rapprise",
+        "npm": "@dinglebear/rapprise@0.2.0"
       },
       "buildInfo": {
         "version": "0.2.0",

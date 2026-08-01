@@ -212,11 +212,11 @@ jobs:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
         run: |
           version="${VERSION#v}"
-          if npm view "apprise-rmcp@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
-      - name: Publish using npm trusted publishing
+          if npm view "@dinglebear/rapprise@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
+      - name: Publish npm package
         if: steps.published.outputs.exists == 'false'
         run: npm publish --provenance --access public ./packages/apprise-rmcp
       - name: Smoke published launcher
         env:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
-        run: npm_config_cache="$(mktemp -d)" npx -y "apprise-rmcp@${VERSION#v}" --version
+        run: npm_config_cache="$(mktemp -d)" npx -y "@dinglebear/rapprise@${VERSION#v}" --version

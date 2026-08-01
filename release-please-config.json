@@ -63,8 +63,8 @@
   ],
   "packages": {
     ".": {
-      "package-name": "apprise-rmcp",
-      "component": "apprise-rmcp",
+      "package-name": "@dinglebear/rapprise",
+      "component": "@dinglebear/rapprise",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         "packages/apprise-rmcp/package.json",

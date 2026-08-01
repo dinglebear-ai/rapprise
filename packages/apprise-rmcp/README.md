@@ -7,8 +7,8 @@ tagged notifications through a preconfigured Apprise server, run one-off
 Apprise URL sends, and check upstream health through stdio MCP, Streamable HTTP
 MCP, or direct shell commands.
 
-**30-second path:** run `npx -y apprise-rmcp health --json` -> start loopback
-HTTP with `APPRISE_MCP_HOST=127.0.0.1 npx -y apprise-rmcp serve` -> call
+**30-second path:** run `npx -y @dinglebear/rapprise health --json` -> start loopback
+HTTP with `APPRISE_MCP_HOST=127.0.0.1 npx -y @dinglebear/rapprise serve` -> call
 `tools/call` with `{"action":"health"}`.
 
 **Status:** operational RMCP upstream-client server. Write-capable; notification
@@ -49,7 +49,7 @@ isolation, or passing upstream Apprise bearer tokens through MCP tool arguments.
 | Repository | `apprise-rmcp` |
 | Rust crate | `apprise-mcp` |
 | Binary / CLI | `rapprise` |
-| npm package | `apprise-rmcp` |
+| npm package | `@dinglebear/rapprise` |
 | npm binary aliases | `apprise-rmcp`, `rapprise` |
 | MCP tool | `apprise` |
 | Config home | `~/.apprise` on hosts, `/data` in containers |
@@ -74,7 +74,7 @@ the short Rust CLI name `rapprise`.
 
 | Path | Command | Best for | Notes |
 |---|---|---|---|
-| npm / npx | `npx -y apprise-rmcp --help` | Linux/Windows x86_64 clients. | Verifies the release archive SHA-256 before atomic install. |
+| npm / npx | `npx -y @dinglebear/rapprise --help` | Linux/Windows x86_64 clients. | Verifies the release archive SHA-256 before atomic install. |
 | Release installer | [Verified installer procedure](#verified-release-installer) | Linux x86_64 without Node. | Verifies checksum and offline provenance before executing installer code. |
 | Docker / Compose | `docker compose up -d` | Shared HTTP MCP deployments. | Reads `.env` and exposes container port `40050`. Needs the external network first — see [Deployment](#docker--compose). |
 | Build from source | `cargo build --release` | Development and audits. | Produces `target/release/rapprise`. |
@@ -89,9 +89,9 @@ The npm launcher supports x86_64 Linux and Windows release assets.
 Run the stdio MCP server or CLI without a manual binary install:
 
 ```bash
-npx -y apprise-rmcp --help
-npx -y apprise-rmcp mcp
-npx -y apprise-rmcp health --json
+npx -y @dinglebear/rapprise --help
+npx -y @dinglebear/rapprise mcp
+npx -y @dinglebear/rapprise health --json
 ```
 
 The npm package downloads `rapprise` during `postinstall`. Override download
@@ -176,13 +176,13 @@ export APPRISE_TOKEN=...
 ### 2. Run A Safe CLI Call
 
 ```bash
-npx -y apprise-rmcp health --json
+npx -y @dinglebear/rapprise health --json
 ```
 
 ### 3. Start Loopback HTTP MCP
 
 ```bash
-APPRISE_MCP_HOST=127.0.0.1 npx -y apprise-rmcp serve
+APPRISE_MCP_HOST=127.0.0.1 npx -y @dinglebear/rapprise serve
 ```
 
 In another shell:
@@ -265,7 +265,7 @@ secret storage.
 
 | Surface | Status | Entry point | Purpose |
 |---|---:|---|---|
-| MCP stdio | Supported | `rapprise mcp`, `npx -y apprise-rmcp mcp` | Local child-process MCP clients. |
+| MCP stdio | Supported | `rapprise mcp`, `npx -y @dinglebear/rapprise mcp` | Local child-process MCP clients. |
 | MCP HTTP | Supported | `rapprise serve`, `POST /mcp` | Streamable HTTP MCP for local or shared server deployments. |
 | Liveness | Supported | `GET /health` | Always unauthenticated. |
 | Readiness / status | Supported | `GET /ready`, `GET /status` | Behind the same auth layer as `/mcp`. |
@@ -472,7 +472,7 @@ not a pure argument shim.
 | npm launcher | `packages/apprise-rmcp/package.json`, `bin/rapprise.js`, `lib/platform.js`, `scripts/install.js` | GitHub Release tag and assets named `rapprise-x86_64.tar.gz` and `rapprise-windows-x86_64.tar.gz`. |
 | GitHub Releases | `.github/workflows/*`, `scripts/install.sh`, `install.sh` | Package version, binary name, checksums, supported platforms. |
 | Docker / Compose | `config/Dockerfile`, `docker-compose.yml`, `docker-compose.prod.yml` | Exposed port `40050`, healthcheck `/health`, env file contract. |
-| MCP registry | `server.json` | Identity `ai.dinglebear/apprise-rmcp`, stdio package, version. |
+| MCP registry | `server.json` | Identity `ai.dinglebear/rapprise`, stdio package, version. |
 | Plugin | `plugins/apprise` | Bundled `rapprise` stdio only. No hooks, no `version`, no `userConfig` in manifests. |
 | Docs | `README.md`, `docs/INVENTORY.md`, `docs/QUICKSTART.md` | Current binary name, default port, action list, and env names. |
 

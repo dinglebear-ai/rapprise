@@ -111,6 +111,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Install Rust and kache
+        uses: ./.github/actions/setup-rust-kache
       - run: bash scripts/check-ci-policy.sh
       - run: bash scripts/check-version-sync.sh
       - run: bash scripts/validate-plugin-layout.sh
