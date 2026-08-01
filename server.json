@@ -24,7 +24,7 @@
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "@dinglebear/rapprise-mcp",
+      "identifier": "@dinglebear/rapprise",
       "version": "0.2.0",
       "runtimeHint": "npx",
       "packageArguments": [
@@ -99,8 +99,8 @@
       "namespace": "ai.dinglebear",
       "dnsDomain": "dinglebear.ai",
       "distribution": {
-        "nodePackage": "@dinglebear/rapprise-mcp",
-        "npm": "@dinglebear/rapprise-mcp@0.2.0"
+        "nodePackage": "@dinglebear/rapprise",
+        "npm": "@dinglebear/rapprise@0.2.0"
       },
       "buildInfo": {
         "version": "0.2.0",

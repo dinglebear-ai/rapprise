@@ -1,5 +1,5 @@
 {
-  "name": "@dinglebear/rapprise-mcp",
+  "name": "@dinglebear/rapprise",
   "version": "0.2.0",
   "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
   "license": "MIT",

@@ -216,7 +216,7 @@ jobs:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
         run: |
           version="${VERSION#v}"
-          if npm view "@dinglebear/rapprise-mcp@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
+          if npm view "@dinglebear/rapprise@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
       - name: Publish npm package
         if: steps.published.outputs.exists == 'false'
         env:
@@ -225,4 +225,4 @@ jobs:
       - name: Smoke published launcher
         env:
           VERSION: ${{ needs.release-meta.outputs.tag_name }}
-        run: npm_config_cache="$(mktemp -d)" npx -y "@dinglebear/rapprise-mcp@${VERSION#v}" --version
+        run: npm_config_cache="$(mktemp -d)" npx -y "@dinglebear/rapprise@${VERSION#v}" --version

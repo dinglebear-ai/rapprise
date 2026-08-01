@@ -5,7 +5,7 @@
 
 ## Product contract
 
-- Repository: `rapprise`; npm package: `@dinglebear/rapprise-mcp` (`packages/apprise-rmcp/`)
+- Repository: `rapprise`; npm package: `@dinglebear/rapprise` (`packages/apprise-rmcp/`)
 - Git remote: `git@github.com:dinglebear-ai/rapprise.git`, default branch `main`
 - Rust crate/service: `apprise-mcp`
 - Executable: `rapprise`
