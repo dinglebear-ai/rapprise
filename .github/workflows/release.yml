@@ -114,10 +114,31 @@ jobs:
           set -euo pipefail
           active_toolchain="$(rustup show active-toolchain | awk '{print $1}')"
           rustup target add --toolchain "${active_toolchain}" "${{ matrix.target }}"
+      - name: Install and normalize Windows cross-linker tools
+        if: matrix.target == 'x86_64-pc-windows-msvc'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y clang lld llvm nasm
+          for tool in llvm-lib clang-cl lld-link; do
+            if command -v "$tool" >/dev/null 2>&1; then
+              continue
+            fi
+            candidate="$(find /usr/bin -maxdepth 1 -type f -name "${tool}-*" -print | sort -V | tail -n 1)"
+            if [[ -z "$candidate" ]]; then
+              echo "::error::Unable to locate ${tool} after installing LLVM"
+              exit 1
+            fi
+            sudo ln -sf "$candidate" "/usr/local/bin/${tool}"
+          done
+          llvm-lib --version
+          clang-cl --version
+          lld-link --version
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
         if: matrix.target == 'x86_64-pc-windows-msvc'
         with:
-          tool: cargo-xwin@0.20.2
+          tol: cargo-xwin@0.20.2
       - name: Build Linux
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: cargo build --release --locked --target ${{ matrix.target }} --bin rapprise
