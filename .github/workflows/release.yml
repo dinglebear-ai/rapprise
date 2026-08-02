@@ -22,6 +22,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       tag_name: ${{ steps.meta.outputs.tag_name }}
+      tag_ref: ${{ steps.meta.outputs.tag_ref }}
     steps:
       - id: meta
         env:
@@ -33,6 +34,7 @@ jobs:
           [[ -n "$tag" ]] || { echo "::error::tag_name is required"; exit 1; }
           [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]] || { echo "::error::invalid release tag: $tag"; exit 1; }
           echo "tag_name=$tag" >> "$GITHUB_OUTPUT"
+          echo "tag_ref=refs/tags/${tag}" >> "$GITHUB_OUTPUT"
 
   preflight:
     needs: release-meta
@@ -41,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ needs.release-meta.outputs.tag_name }}
+          ref: ${{ needs.release-meta.outputs.tag_ref }}
           fetch-depth: 0
           persist-credentials: false
       - name: Require tag commit on main
@@ -101,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ needs.release-meta.outputs.tag_name }}
+          ref: ${{ needs.release-meta.outputs.tag_ref }}
           persist-credentials: false
       - name: Install Rust and kache
         uses: ./.github/actions/setup-rust-kache
@@ -179,7 +181,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ needs.release-meta.outputs.tag_name }}
+          ref: ${{ needs.release-meta.outputs.tag_ref }}
           persist-credentials: false
       - run: |
           cp scripts/install.sh rapprise-installer.sh
@@ -231,7 +233,7 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
-          ref: ${{ needs.release-meta.outputs.tag_name }}
+          ref: ${{ needs.release-meta.outputs.tag_ref }}
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
