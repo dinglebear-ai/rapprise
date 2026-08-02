@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.1](https://github.com/dinglebear-ai/rapprise/compare/v0.2.0...v0.2.1) (2026-08-01)
+
+### Fixed
+
+* publish the npm launcher as @dinglebear/rapprise with a binary-producing release workflow.
+
 ## [0.2.0](https://github.com/jmagar/rapprise/compare/v0.1.3...v0.2.0) (2026-07-18)
 
 
