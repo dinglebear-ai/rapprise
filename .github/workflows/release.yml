@@ -137,10 +137,10 @@ jobs:
           llvm-lib --version
           clang-cl --version
           lld-link --version
-      - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
+      - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # cargo-xwin
         if: matrix.target == 'x86_64-pc-windows-msvc'
         with:
-          tol: cargo-xwin@0.20.2
+          tool: cargo-xwin@0.20.2
       - name: Build Linux
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: cargo build --release --locked --target ${{ matrix.target }} --bin rapprise
