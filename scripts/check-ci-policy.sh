@@ -36,7 +36,17 @@ for forbidden in ["workflow_run:", "workflow_dispatch:", "self-hosted"]:
 
 release = (workflow_dir / "release.yml").read_text()
 if "workflow_dispatch:" in release:
-    errors.append("release.yml: provenance-bearing releases must not run from an ambiguous manual ref")
+    for required in [
+        "tag_name:",
+        "required: true",
+        'echo "tag_ref=refs/tags/${tag}"',
+        "ref: ${{ needs.release-meta.outputs.tag_ref }}",
+    ]:
+        if required not in release:
+            errors.append(
+                "release.yml: manual recovery must resolve an explicit immutable tag ref; "
+                f"missing {required!r}"
+            )
 preflight = release.find("preflight:")
 build = release.find("build:")
 if preflight < 0 or build < preflight or "needs: [release-meta, preflight]" not in release:

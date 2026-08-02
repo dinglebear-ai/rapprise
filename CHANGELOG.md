@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.2](https://github.com/dinglebear-ai/rapprise/compare/v0.2.1...v0.2.2) (2026-08-02)
+
+### Fixed
+
+* publish release assets with immutable tag-bound provenance for npm installation
+
 ## [0.2.1](https://github.com/dinglebear-ai/rapprise/compare/v0.2.0...v0.2.1) (2026-08-01)
 
 ### Fixed
