@@ -3,6 +3,12 @@ name: Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Existing vX.Y.Z release tag to resume
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -19,12 +25,12 @@ jobs:
     steps:
       - id: meta
         env:
-          EVENT_NAME: ${{ github.event_name }}
           EVENT_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag_name }}
         run: |
           set -euo pipefail
-          [[ "$EVENT_NAME" == release ]] || { echo "::error::release workflow requires a published release event"; exit 1; }
-          tag="$EVENT_TAG"
+          tag="${EVENT_TAG:-${INPUT_TAG:-}}"
+          [[ -n "$tag" ]] || { echo "::error::tag_name is required"; exit 1; }
           [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]] || { echo "::error::invalid release tag: $tag"; exit 1; }
           echo "tag_name=$tag" >> "$GITHUB_OUTPUT"
 
@@ -101,6 +107,13 @@ jobs:
         uses: ./.github/actions/setup-rust-kache
         with:
           targets: ${{ matrix.target }}
+      - name: Ensure Windows target is installed for the active toolchain
+        if: matrix.target == 'x86_64-pc-windows-msvc'
+        shell: bash
+        run: |
+          set -euo pipefail
+          active_toolchain="$(rustup show active-toolchain | awk '{print $1}')"
+          rustup target add --toolchain "${active_toolchain}" "${{ matrix.target }}"
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
         if: matrix.target == 'x86_64-pc-windows-msvc'
         with:
