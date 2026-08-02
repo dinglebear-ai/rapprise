@@ -127,7 +127,7 @@ jobs:
             if command -v "$tool" >/dev/null 2>&1; then
               continue
             fi
-            candidate="$(find /usr/bin -maxdepth 1 -type f -name "${tool}-*" -print | sort -V | tail -n 1)"
+            candidate="$(find /usr/bin -maxdepth 1 -name "${tool}-*" -print | sort -V | tail -n 1)"
             if [[ -z "$candidate" ]]; then
               echo "::error::Unable to locate ${tool} after installing LLVM"
               exit 1
