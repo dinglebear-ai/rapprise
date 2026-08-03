@@ -20,6 +20,17 @@ if not match:
     raise SystemExit("[version-sync] Cargo.toml package/workspace.package version is missing")
 values["Cargo.toml canonical version"] = match.group(1)
 
+xtask = Path("xtask/Cargo.toml").read_text()
+xtask_match = re.search(
+    r'(?ms)^\[package\].*?^version\s*=\s*"([^"]+)"',
+    xtask,
+)
+if not xtask_match:
+    raise SystemExit(
+        "[version-sync] xtask/Cargo.toml requires an explicit scalar package version for release-please"
+    )
+values["xtask/Cargo.toml version"] = xtask_match.group(1)
+
 npm = json.loads(Path("packages/apprise-rmcp/package.json").read_text())
 values["packages/apprise-rmcp/package.json version"] = npm["version"]
 values["packages/apprise-rmcp/package.json binaryVersion"] = npm["binaryVersion"]
