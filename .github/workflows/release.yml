@@ -222,10 +222,12 @@ jobs:
           for checksum in ./*.sha256; do sha256sum --check "$checksum"; done
           cat -- ./*.sha256 | sort -k2 > SHA256SUMS
       - name: Attach verified release assets
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          tag_name: ${{ needs.release-meta.outputs.tag_name }}
-          files: dist/release-assets/*
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release-meta.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" dist/release-assets/* --clobber --repo "$GITHUB_REPOSITORY"
 
   npm:
     name: Publish @dinglebear/rapprise to npm

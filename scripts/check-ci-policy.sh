@@ -64,6 +64,10 @@ for required in [
         errors.append(f"release.yml: missing trusted npm publisher marker {required!r}")
 if "npm publish --provenance" in release:
     errors.append("release.yml: direct npm publishing must remain in the approved reusable workflow")
+if 'gh release upload "$RELEASE_TAG" dist/release-assets/* --clobber' not in release:
+    errors.append("release.yml: release recovery must upload verified assets without mutating release metadata")
+if "softprops/action-gh-release@" in release:
+    errors.append("release.yml: release recovery must not use an action that updates existing release metadata")
 top_level_permissions = release.split("\nenv:", 1)[0]
 if "permissions:\n  contents: read\n  id-token: write" not in top_level_permissions:
     errors.append("release.yml: trusted npm publishing requires top-level id-token: write")
