@@ -23,6 +23,7 @@ jobs:
     outputs:
       tag_name: ${{ steps.meta.outputs.tag_name }}
       tag_ref: ${{ steps.meta.outputs.tag_ref }}
+      version: ${{ steps.meta.outputs.version }}
     steps:
       - id: meta
         env:
@@ -33,8 +34,11 @@ jobs:
           tag="${EVENT_TAG:-${INPUT_TAG:-}}"
           [[ -n "$tag" ]] || { echo "::error::tag_name is required"; exit 1; }
           [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]] || { echo "::error::invalid release tag: $tag"; exit 1; }
-          echo "tag_name=$tag" >> "$GITHUB_OUTPUT"
-          echo "tag_ref=refs/tags/${tag}" >> "$GITHUB_OUTPUT"
+          {
+            echo "tag_name=$tag"
+            echo "tag_ref=refs/tags/${tag}"
+            echo "version=${tag#v}"
+          } >> "$GITHUB_OUTPUT"
 
   preflight:
     needs: release-meta
@@ -223,36 +227,14 @@ jobs:
           files: dist/release-assets/*
 
   npm:
+    name: Publish @dinglebear/rapprise to npm
     needs: [release-meta, preflight, publish-release]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    environment: npm
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          ref: ${{ needs.release-meta.outputs.tag_ref }}
-          persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
-      - run: npm install --global npm@11.5.2 --ignore-scripts
-      - run: npm test --prefix packages/apprise-rmcp
-      - run: npm run check --prefix packages/apprise-rmcp
-      - run: npm pack --dry-run --json ./packages/apprise-rmcp
-      - id: published
-        env:
-          VERSION: ${{ needs.release-meta.outputs.tag_name }}
-        run: |
-          version="${VERSION#v}"
-          if npm view "@dinglebear/rapprise@${version}" version >/dev/null 2>&1; then echo exists=true >> "$GITHUB_OUTPUT"; else echo exists=false >> "$GITHUB_OUTPUT"; fi
-      - name: Publish npm package
-        if: steps.published.outputs.exists == 'false'
-        run: npm publish --provenance --access public ./packages/apprise-rmcp
-      - name: Smoke published launcher
-        env:
-          VERSION: ${{ needs.release-meta.outputs.tag_name }}
-        run: npm_config_cache="$(mktemp -d)" npx -y "@dinglebear/rapprise@${VERSION#v}" --version
+    uses: dinglebear-ai/workflows/.github/workflows/npm-trusted-publish.yml@64d705af6e164aac58d507df6fb2f6bdc8a4d22d
+    with:
+      checkout-ref: ${{ needs.release-meta.outputs.tag_ref }}
+      expected-version: ${{ needs.release-meta.outputs.version }}
+      working-directory: packages/apprise-rmcp
+      cache-dependency-path: packages/apprise-rmcp/package.json
+      enable-cache: false
+      install-command: "true"
+      verify-command: npm test && npm run check
