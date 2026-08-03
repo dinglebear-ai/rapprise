@@ -3,7 +3,7 @@
   "name": "ai.dinglebear/rapprise",
   "title": "Apprise RMCP",
   "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "websiteUrl": "https://rapprise.dinglebear.ai",
   "repository": {
     "url": "https://github.com/dinglebear-ai/rapprise",
@@ -25,7 +25,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@dinglebear/rapprise",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "runtimeHint": "npx",
       "packageArguments": [
         {
@@ -100,10 +100,10 @@
       "dnsDomain": "dinglebear.ai",
       "distribution": {
         "nodePackage": "@dinglebear/rapprise",
-        "npm": "@dinglebear/rapprise@0.2.2"
+        "npm": "@dinglebear/rapprise@0.2.3"
       },
       "buildInfo": {
-        "version": "0.2.2",
+        "version": "0.2.3",
         "repository": "https://github.com/dinglebear-ai/rapprise"
       }
     }

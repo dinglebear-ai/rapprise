@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.3](https://github.com/dinglebear-ai/rapprise/compare/v0.2.2...v0.2.3) (2026-08-03)
+
+
+### Fixed
+
+* **ci:** preserve existing Kache config ([#17](https://github.com/dinglebear-ai/rapprise/issues/17)) ([36826c4](https://github.com/dinglebear-ai/rapprise/commit/36826c4e50e01b52c6911bc1946c0216fe2bb5fd))
+* **release:** keep root version release-please compatible ([#25](https://github.com/dinglebear-ai/rapprise/issues/25)) ([e6ddc09](https://github.com/dinglebear-ai/rapprise/commit/e6ddc09f62fc55bcc5772996f154fb29337d2b4d))
+* **release:** keep xtask version release-please compatible ([#24](https://github.com/dinglebear-ai/rapprise/issues/24)) ([fd6deb4](https://github.com/dinglebear-ai/rapprise/commit/fd6deb4632535340743658cd4ebdd95b8708ef86))
+* **release:** use trusted npm publisher ([#23](https://github.com/dinglebear-ai/rapprise/issues/23)) ([144b65f](https://github.com/dinglebear-ai/rapprise/commit/144b65f00cf3304525fe7ccafb2a2bcb03508fee))
+
 ## [0.2.2](https://github.com/dinglebear-ai/rapprise/compare/v0.2.1...v0.2.2) (2026-08-02)
 
 ### Fixed
