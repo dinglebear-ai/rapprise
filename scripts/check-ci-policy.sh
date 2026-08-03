@@ -64,6 +64,9 @@ for required in [
         errors.append(f"release.yml: missing trusted npm publisher marker {required!r}")
 if "npm publish --provenance" in release:
     errors.append("release.yml: direct npm publishing must remain in the approved reusable workflow")
+top_level_permissions = release.split("\nenv:", 1)[0]
+if "permissions:\n  contents: read\n  id-token: write" not in top_level_permissions:
+    errors.append("release.yml: trusted npm publishing requires top-level id-token: write")
 
 audit = Path(".cargo/audit.toml").read_text()
 expiry = re.search(r"expires (\d{4}-\d{2}-\d{2})", audit)
