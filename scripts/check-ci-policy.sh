@@ -53,6 +53,17 @@ if preflight < 0 or build < preflight or "needs: [release-meta, preflight]" not 
     errors.append("release.yml: build/publish jobs must depend on complete preflight")
 if "NODE_AUTH_TOKEN" in release or "NPM_TOKEN" in release:
     errors.append("release.yml: npm publication must use trusted publishing, not a long-lived token")
+for required in [
+    "dinglebear-ai/workflows/.github/workflows/npm-trusted-publish.yml@64d705af6e164aac58d507df6fb2f6bdc8a4d22d",
+    "expected-version: ${{ needs.release-meta.outputs.version }}",
+    "working-directory: packages/apprise-rmcp",
+    'install-command: "true"',
+    "verify-command: npm test && npm run check",
+]:
+    if required not in release:
+        errors.append(f"release.yml: missing trusted npm publisher marker {required!r}")
+if "npm publish --provenance" in release:
+    errors.append("release.yml: direct npm publishing must remain in the approved reusable workflow")
 
 audit = Path(".cargo/audit.toml").read_text()
 expiry = re.search(r"expires (\d{4}-\d{2}-\d{2})", audit)
