@@ -39,7 +39,11 @@ if "workflow_dispatch:" in release:
     for required in [
         "tag_name:",
         "required: true",
-        'echo "tag_ref=refs/tags/${tag}"',
+        "EVENT_REF: ${{ github.ref }}",
+        'tag_ref="refs/tags/${tag}"',
+        '[[ "$EVENT_REF" == "$tag_ref" ]]',
+        'dispatch with --ref ${tag}',
+        'echo "tag_ref=$tag_ref"',
         "ref: ${{ needs.release-meta.outputs.tag_ref }}",
     ]:
         if required not in release:

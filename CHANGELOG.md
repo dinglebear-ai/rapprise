@@ -45,6 +45,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Require release recovery workflows to run at the immutable release tag ref so
+  GitHub provenance binds npm-downloaded assets to the released source commit.
+
 ### Changed
 
 - Standardized package/repo identity on `apprise-rmcp`, executable paths on
