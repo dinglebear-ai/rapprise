@@ -63,7 +63,7 @@ repository.workspace = true
 publish = false
 categories = ["command-line-utilities", "api-bindings", "network-programming", "development-tools"]
 keywords = ["mcp", "apprise", "notifications", "rmcp", "homelab"]
-description = "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging."
+description = "Apprise notifications over MCP and CLI with authenticated stdio and HTTP transports."
 autobins = false
 
 [[bin]]
