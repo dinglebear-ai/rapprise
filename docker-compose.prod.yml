@@ -25,7 +25,8 @@ services:
       - path: .env
         required: false
     ports:
-      - "${APPRISE_MCP_HOST_PORT:-40050}:40050/tcp"
+      - "100.88.16.79:${APPRISE_MCP_HOST_PORT:-40050}:40050/tcp"
+      - "10.1.0.6:${APPRISE_MCP_HOST_PORT:-40050}:40050/tcp"
     volumes:
       - ${APPRISE_DATA_DIR:-${HOME}/.apprise}:/data
     healthcheck:
