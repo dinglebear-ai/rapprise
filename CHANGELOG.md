@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.0](https://github.com/dinglebear-ai/rapprise/compare/v0.2.3...v0.3.0) (2026-08-04)
+
+
+### Added
+
+* **release:** publish canonical MCP Registry metadata ([#30](https://github.com/dinglebear-ai/rapprise/issues/30)) ([0c16453](https://github.com/dinglebear-ai/rapprise/commit/0c16453ba40e399d24bcfe6e6f5acc7ff52be6a3))
+
+
+### Fixed
+
+* **release:** bind recovery provenance to tags ([#32](https://github.com/dinglebear-ai/rapprise/issues/32)) ([3c6f477](https://github.com/dinglebear-ai/rapprise/commit/3c6f477759c3e023cdc3bf81518fc800bbe229d9))
+* **release:** grant npm OIDC permission ([#27](https://github.com/dinglebear-ai/rapprise/issues/27)) ([5b12e5a](https://github.com/dinglebear-ai/rapprise/commit/5b12e5a350f4c5d5d8849104d082b57bab30a0b2))
+* **release:** upload recovery assets without metadata mutation ([#28](https://github.com/dinglebear-ai/rapprise/issues/28)) ([7367c37](https://github.com/dinglebear-ai/rapprise/commit/7367c37c3ec0f47de5f8d82ba2548b9d49164c96))
+
 ## [0.2.3](https://github.com/dinglebear-ai/rapprise/compare/v0.2.2...v0.2.3) (2026-08-03)
 
 
