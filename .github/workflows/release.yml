@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: Existing vX.Y.Z release tag to resume
+        description: Existing vX.Y.Z release tag to resume; dispatch this workflow with --ref <tag>
         required: true
         type: string
 
@@ -28,6 +28,7 @@ jobs:
     steps:
       - id: meta
         env:
+          EVENT_REF: ${{ github.ref }}
           EVENT_TAG: ${{ github.event.release.tag_name }}
           INPUT_TAG: ${{ inputs.tag_name }}
         run: |
@@ -35,9 +36,14 @@ jobs:
           tag="${EVENT_TAG:-${INPUT_TAG:-}}"
           [[ -n "$tag" ]] || { echo "::error::tag_name is required"; exit 1; }
           [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]] || { echo "::error::invalid release tag: $tag"; exit 1; }
+          tag_ref="refs/tags/${tag}"
+          [[ "$EVENT_REF" == "$tag_ref" ]] || {
+            echo "::error::release workflow must run at ${tag_ref}; got ${EVENT_REF}. For manual recovery, dispatch with --ref ${tag}."
+            exit 1
+          }
           {
             echo "tag_name=$tag"
-            echo "tag_ref=refs/tags/${tag}"
+            echo "tag_ref=$tag_ref"
             echo "version=${tag#v}"
           } >> "$GITHUB_OUTPUT"
 
