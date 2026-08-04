@@ -1,7 +1,7 @@
 {
   "name": "@dinglebear/rapprise",
   "version": "0.2.3",
-  "description": "MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.",
+  "description": "Apprise notifications over MCP and CLI with authenticated stdio and HTTP transports.",
   "license": "MIT",
   "homepage": "https://rapprise.dinglebear.ai",
   "repository": {

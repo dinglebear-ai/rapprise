@@ -1,6 +1,6 @@
 # apprise-rmcp
 
-MCP server and CLI for Apprise: fan out notifications to dozens of delivery backends over stdio or streamable HTTP, with auth and plugin packaging.
+Apprise notifications over MCP and CLI with authenticated stdio and HTTP transports.
 
 It exposes one MCP tool, `apprise`, plus the `rapprise` CLI. Agents can send
 tagged notifications through a preconfigured Apprise server, run one-off
