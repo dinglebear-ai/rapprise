@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.1](https://github.com/dinglebear-ai/rapprise/compare/v0.3.0...v0.3.1) (2026-08-05)
+
+
+### Fixed
+
+* **compose:** bind MCP to trusted interfaces ([#33](https://github.com/dinglebear-ai/rapprise/issues/33)) ([a33dc06](https://github.com/dinglebear-ai/rapprise/commit/a33dc060676004b6ee849c9f1fe3d7ff974a4e93))
+* **mcp:** use DNS-only Registry publisher ([#31](https://github.com/dinglebear-ai/rapprise/issues/31)) ([0c6a922](https://github.com/dinglebear-ai/rapprise/commit/0c6a9222c3b360106441a160735cb13ee506afc4))
+
 ## [Unreleased]
 
 ### Changed

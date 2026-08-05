@@ -1,6 +1,6 @@
 {
   "name": "@dinglebear/rapprise",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Apprise notifications over MCP and CLI with authenticated stdio and HTTP transports.",
   "license": "MIT",
   "homepage": "https://rapprise.dinglebear.ai",
@@ -55,7 +55,7 @@
     "stdio"
   ],
   "mcpName": "ai.dinglebear/rapprise",
-  "binaryVersion": "0.3.0",
+  "binaryVersion": "0.3.1",
   "author": {
     "name": "dinglebear.ai",
     "url": "https://dinglebear.ai"
