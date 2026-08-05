@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+
+- Pin the shared Rust cache action to Kache 0.13.0 so hosted and self-hosted jobs use the same stabilized daemon protocol.
+- Bind the production MCP port only to DOOKIE's Tailscale and LAN addresses instead of every host interface.
+
 ## [0.3.0](https://github.com/dinglebear-ai/rapprise/compare/v0.2.3...v0.3.0) (2026-08-04)
 
 
