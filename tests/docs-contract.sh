@@ -31,7 +31,7 @@ test "$(jq -r .version server.json)" = \
   "$(jq -r '._meta["io.modelcontextprotocol.registry/publisher-provided"].buildInfo.version' server.json)"
 test "$(jq -r 'has("userConfig")' plugins/apprise/.claude-plugin/plugin.json)" = false
 
-if grep -R --exclude-dir=sessions -n -E 'syslog-mcp|target/release/apprise|default 8765|localhost:8765|tv\.tootie/apprise-mcp' \
+if grep -R --exclude-dir=sessions -n -E 'syslog-mcp|target/release/apprise|default 8765|localhost:8765|tv\.nashost/apprise-mcp' \
   README.md CLAUDE.md docs plugins .claude server.json; then
   echo "documentation contains stale product, binary, port, or registry text" >&2
   exit 1
