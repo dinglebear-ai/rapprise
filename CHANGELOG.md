@@ -8,6 +8,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+
+- Relicense Dinglebear-owned original work under AGPL-3.0-only and document separate commercial licensing; third-party material retains its original terms.
 - Pin the shared Rust cache action to Kache 0.13.0 so hosted and self-hosted jobs use the same stabilized daemon protocol.
 - Bind the production MCP port only to DOOKIE's Tailscale and LAN addresses instead of every host interface.
 

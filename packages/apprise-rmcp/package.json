@@ -1,8 +1,8 @@
 {
   "name": "@dinglebear/rapprise",
   "version": "0.3.0",
+  "license": "AGPL-3.0-only",
   "description": "Apprise notifications over MCP and CLI with authenticated stdio and HTTP transports.",
-  "license": "MIT",
   "homepage": "https://rapprise.dinglebear.ai",
   "repository": {
     "type": "git",
