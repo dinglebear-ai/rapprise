@@ -164,7 +164,7 @@ docker run --rm -p 8000:8000 caronc/apprise:latest
 Use `APPRISE_URL` when the API server is elsewhere:
 
 ```bash
-export APPRISE_URL=http://100.120.242.29:8766
+export APPRISE_URL=http://198.51.100.2:8766
 ```
 
 Set `APPRISE_TOKEN` only when your Apprise API server requires bearer auth:
