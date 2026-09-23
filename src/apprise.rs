@@ -155,7 +155,7 @@ impl AppriseClient {
 
     pub async fn health(&self) -> Result<Value, UpstreamError> {
         let _permit = self.acquire()?;
-        let url = self.endpoint(&["health"], false)?;
+        let url = self.endpoint(&["status"], false)?;
         tracing::debug!(%url, "upstream health check");
         let response = self
             .client

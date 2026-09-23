@@ -36,6 +36,17 @@ fn config(url: String) -> AppriseConfig {
 }
 
 #[tokio::test]
+async fn health_checks_apprise_status_endpoint() {
+    let url = spawn(Router::new().route("/status", get(|| async { "OK" }))).await;
+    let response = AppriseClient::new(&config(url))
+        .unwrap()
+        .health()
+        .await
+        .unwrap();
+    assert_eq!(response["status"], "OK");
+}
+
+#[tokio::test]
 async fn notify_encodes_tag_and_sends_payload_and_auth_headers() {
     let captured = Arc::new(Mutex::new(None));
     let router = Router::new()
@@ -70,7 +81,7 @@ async fn notify_encodes_tag_and_sends_payload_and_auth_headers() {
 
 #[tokio::test]
 async fn response_size_and_http_status_are_typed_errors() {
-    let oversized = spawn(Router::new().route("/health", get(|| async { "x".repeat(128) }))).await;
+    let oversized = spawn(Router::new().route("/status", get(|| async { "x".repeat(128) }))).await;
     let mut small = config(oversized);
     small.max_response_bytes = 32;
     assert!(matches!(
@@ -79,7 +90,7 @@ async fn response_size_and_http_status_are_typed_errors() {
     ));
 
     let failed = spawn(Router::new().route(
-        "/health",
+        "/status",
         get(|| async { (StatusCode::SERVICE_UNAVAILABLE, "maintenance") }),
     ))
     .await;
@@ -95,7 +106,7 @@ async fn response_size_and_http_status_are_typed_errors() {
 #[tokio::test]
 async fn concurrency_limit_load_sheds_without_queueing() {
     let url = spawn(Router::new().route(
-        "/health",
+        "/status",
         get(|| async {
             tokio::time::sleep(Duration::from_millis(250)).await;
             "ok"
