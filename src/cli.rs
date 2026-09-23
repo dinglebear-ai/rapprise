@@ -833,7 +833,7 @@ pub async fn run_doctor(config: &Config, json: bool) -> Result<()> {
 
     // ── 3. Connectivity ───────────────────────────────────────────────────────
     if let Some(ref url) = apprise_url {
-        let health_url = format!("{}/health", url.trim_end_matches('/'));
+        let health_url = format!("{}/status", url.trim_end_matches('/'));
         let start = Instant::now();
         let result = reqwest::Client::builder()
             .timeout(std::time::Duration::from_secs(5))

@@ -418,7 +418,7 @@ suite_auth() {
 suite_meta() {
   printf '\n%b== meta (health + help) ==%b\n' "${C_BOLD}" "${C_RESET}" | tee -a "${LOG_FILE}"
 
-  # health: the MCP tool calls the upstream Apprise API /health — this means
+  # health: the MCP tool calls the upstream Apprise API /status — this means
   # a PASS here confirms real Apprise data is flowing.
   run_test "apprise health: returns ok status" \
     "apprise" '{"action":"health"}' \
