@@ -108,6 +108,6 @@ and assets are coupled. Release Please updates them together.
 
 `RUSTSEC-2023-0071` is currently accepted only because it is inherited through
 `lab-auth`/`jsonwebtoken` and no compatible fixed RSA release is available.
-This exception expires on 2026-08-18. Until replacement, keep OAuth registration/authorization
+This exception was reviewed on 2026-09-23 and expires on 2026-10-23. Until replacement, keep OAuth registration/authorization
 rate limits enabled, restrict allowed accounts and redirect URIs, and monitor
 auth failures. A release must not silently extend this acceptance.
