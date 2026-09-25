@@ -1,0 +1,33 @@
+Workspace cleanup archive for dinglebear-ai/rapprise
+Date: 2026-09-25
+Default: main
+
+STALE_BRANCHES 10
+STALE	chore/rmcp3-edition2024	4cfed950dc3929f040455b31f3a5b6e242af4438
+STALE	chore/scrub-internal-identifiers-20260805	6f019d21c9dcc7be5656350c72274211a71a93e0
+STALE	ci/fleet-operational-20260801	43bde62bcf8a4cbc5649b8b92e20d4cb946abed0
+STALE	codex/scoped-npm-package	85b9b001ff03b466aa511024c92d3fb0565bdf41
+STALE	codex/workflow-alignment-full-20260730	02fa6a9371a08cdd2b4184e3cc8f42077ac10122
+STALE	fix/mcp-registry-dns-caller-20260804	88e80de24973a5f336df7f44a082752cdb64922e
+STALE	fix/release-install-cargo-xwin	6aeb81ca4d8fca05f671c1710d13acdb7dc4700d
+STALE	fix/release-resume-windows	d08983b61ce5fe06b248ce5aaafdd7b6accb56f5
+STALE	fix/release-windows-llvm-lib	8a04857ddfc4bd0a355dd6a6113821d66721ff96
+STALE	fix/release-windows-llvm-symlinks	b034ad42aa463d367999f4f49448c7dc8971f4fb
+
+LOCAL_ONLY_BRANCHES 12
+LOCAL_ONLY	chore/kache-0.15.1	2a1908e028fde409598cf4d4d6efdc283cdcde04
+LOCAL_ONLY	chore/scrub-internal-identifiers-20260805	6f019d21c9dcc7be5656350c72274211a71a93e0
+LOCAL_ONLY	ci/hosted-kache-minio-20260805	de72f44df80576f78de568bdbc24412a1d0dda25
+LOCAL_ONLY	codex/rapprise-apprise-status	eee3393fe93eda6fac1dbe54e9dd7a31870fe02b
+LOCAL_ONLY	codex/rapprise-audit-remediation	13de846d936a084619f948e44f7f208c5fe41a3b
+LOCAL_ONLY	codex/scoped-npm-package	85b9b001ff03b466aa511024c92d3fb0565bdf41
+LOCAL_ONLY	fix/mcp-registry-dns-caller-20260804	88e80de24973a5f336df7f44a082752cdb64922e
+LOCAL_ONLY	fix/release-install-cargo-xwin	6aeb81ca4d8fca05f671c1710d13acdb7dc4700d
+LOCAL_ONLY	fix/release-resume-windows	d08983b61ce5fe06b248ce5aaafdd7b6accb56f5
+LOCAL_ONLY	fix/release-windows-llvm-lib	8a04857ddfc4bd0a355dd6a6113821d66721ff96
+LOCAL_ONLY	fix/release-windows-llvm-symlinks	b034ad42aa463d367999f4f49448c7dc8971f4fb
+LOCAL_ONLY	main	2a1908e028fde409598cf4d4d6efdc283cdcde04
+
+STALE_WORKTREES 0
+
+WIP_SNAPSHOTS 0

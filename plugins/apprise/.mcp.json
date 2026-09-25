@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "apprise": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/bin/rapprise",
-      "args": ["mcp"]
-    }
-  }
-}
