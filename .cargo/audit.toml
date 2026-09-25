@@ -1,9 +1,0 @@
-[advisories]
-ignore = [
-  # TEMPORARY EXCEPTION, expires 2026-10-23. Re-reviewed 2026-09-23. Inherited through
-  # lab-auth/jsonwebtoken; no fixed rsa release is available. OAuth endpoints
-  # are authenticated/rate-limited by lab-auth. The advisory concerns RSA
-  # PKCS#1 v1.5 decryption; this dependency is used for JWT signing. Remove
-  # this exception as soon as the dependency migrates off the affected release.
-  "RUSTSEC-2023-0071",
-]
