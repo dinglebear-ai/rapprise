@@ -69,6 +69,11 @@ jobs:
         uses: ./.github/actions/setup-rust-kache
         with:
           components: rustfmt,clippy
+          s3-access-key: ${{ secrets.KACHE_S3_ACCESS_KEY }}
+          s3-secret-key: ${{ secrets.KACHE_S3_SECRET_KEY }}
+          s3-endpoint: ${{ vars.KACHE_S3_ENDPOINT }}
+          s3-bucket: ${{ vars.KACHE_S3_BUCKET }}
+          s3-prefix: ${{ vars.KACHE_S3_PREFIX }}
       - uses: taiki-e/install-action@6d9ce389421e24f7b73aff5e841bbe5a6b4c974c # nextest
         with:
           tool: nextest@0.9.100
@@ -120,6 +125,11 @@ jobs:
         uses: ./.github/actions/setup-rust-kache
         with:
           targets: ${{ matrix.target }}
+          s3-access-key: ${{ secrets.KACHE_S3_ACCESS_KEY }}
+          s3-secret-key: ${{ secrets.KACHE_S3_SECRET_KEY }}
+          s3-endpoint: ${{ vars.KACHE_S3_ENDPOINT }}
+          s3-bucket: ${{ vars.KACHE_S3_BUCKET }}
+          s3-prefix: ${{ vars.KACHE_S3_PREFIX }}
       - name: Ensure Windows target is installed for the active toolchain
         if: matrix.target == 'x86_64-pc-windows-msvc'
         shell: bash
