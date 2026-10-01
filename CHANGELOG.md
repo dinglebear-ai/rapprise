@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.1](https://github.com/dinglebear-ai/rapprise/compare/v0.3.0...v0.3.1) (2026-10-01)
+
+
+### Fixed
+
+* check Apprise API status endpoint for health ([#42](https://github.com/dinglebear-ai/rapprise/issues/42)) ([c78e008](https://github.com/dinglebear-ai/rapprise/commit/c78e0084eec206d0a7497fdf3869ee1d626da048))
+* **compose:** bind MCP to trusted interfaces ([#33](https://github.com/dinglebear-ai/rapprise/issues/33)) ([a33dc06](https://github.com/dinglebear-ai/rapprise/commit/a33dc060676004b6ee849c9f1fe3d7ff974a4e93))
+* **mcp:** use DNS-only Registry publisher ([#31](https://github.com/dinglebear-ai/rapprise/issues/31)) ([0c6a922](https://github.com/dinglebear-ai/rapprise/commit/0c6a9222c3b360106441a160735cb13ee506afc4))
+* refresh vulnerable dependencies and RSA exception review ([#43](https://github.com/dinglebear-ai/rapprise/issues/43)) ([96d0859](https://github.com/dinglebear-ai/rapprise/commit/96d08593a6f4da3bec488067490be982e6f0b022))
+
 ## [Unreleased]
 
 ### Changed
